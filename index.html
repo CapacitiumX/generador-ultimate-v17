@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador Ultimate V17 - Con Auto-Guardado</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/dist/pptxgen.bundle.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root { --primary: #0056b3; --bg: #e9ecef; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); padding: 20px; margin: 0; }
+        .container { max-width: 1450px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        
+        /* Navegación y Header */
+        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #f1f3f5; padding: 10px; border-radius: 8px; }
+        .save-status { font-size: 0.9em; color: #28a745; font-weight: bold; display: none; }
+        
+        .nav-tabs { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .nav-btn { padding: 12px 25px; border: none; background: #dee2e6; cursor: pointer; border-radius: 5px; font-weight: bold; color: #495057; transition: 0.3s; }
+        .nav-btn.active { background: var(--primary); color: white; transform: scale(1.05); }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+        /* Estilos CV */
+        #cv-layout { display: grid; grid-template-columns: 40% 60%; gap: 20px; }
+        @media(max-width: 1000px) { #cv-layout { grid-template-columns: 1fr; } }
+
+        .sticky-toolbar { position: sticky; top: 0; background: #343a40; color: white; padding: 10px; z-index: 1000; border-radius: 5px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .tool-btn { background: #495057; border: 1px solid #6c757d; color: white; padding: 5px 12px; cursor: pointer; border-radius: 3px; font-size: 14px; }
+        
+        .rich-input { border: 1px solid #ced4da; background: #fff; padding: 8px; border-radius: 4px; min-height: 24px; outline: none; transition: 0.3s; font-size: 14px; color: #333; }
+        .rich-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,86,179,0.1); }
+        
+        .custom-select { padding: 8px; border: 1px solid #ced4da; border-radius: 4px; background: #fff; width: 100%; font-size: 13px; margin-bottom: 5px; font-weight: bold; color: #333; }
+        
+        .form-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid var(--primary); }
+        .item-row { background: white; padding: 15px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-sm { padding: 4px 10px; font-size: 12px; cursor: pointer; border: none; border-radius: 3px; color: white; margin-left: 3px; }
+        .btn-up { background: #6c757d; } .btn-down { background: #6c757d; } .btn-del { background: #dc3545; }
+
+        #cv-preview-box { background: #6c757d; padding: 20px; overflow: auto; height: 1000px; border-radius: 8px; display: flex; justify-content: center; }
+        #cv-paper { width: 210mm; min-height: 297mm; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.5); padding: 0; color: #333; overflow: hidden; position: relative; }
+        
+        /* Excel & PPT Styles */
+        .excel-table { border-collapse: collapse; width: 100%; font-family: Calibri, sans-serif; font-size: 14px; background: white; }
+        .excel-table th { color: white; padding: 10px; border: 1px solid rgba(0,0,0,0.2); text-align: left; }
+        .excel-table td { border: 1px solid #ddd; padding: 8px; color: #333; }
+        .excel-table tr:nth-child(even) { background: #f9f9f9; }
+
+        @media print {
+            @page { margin: 0; }
+            body { margin: 0; background: white; }
+            .nav-tabs, .header-actions, .sticky-toolbar, .form-section, .btn-sm, #cv-layout > div:first-child, .section:not(.active), h2, label, input, select, button { display: none !important; }
+            #cv-layout { display: block; width: 100%; }
+            #cv-preview-box { height: auto; overflow: visible; padding: 0; background: white; display: block; margin: 0; }
+            #cv-paper { box-shadow: none; margin: 0; width: 100%; height: auto; }
+            header, footer { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="header-actions">
+        <h3 style="margin:0; color:#333;">Generador V17</h3>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <span id="autoSaveMsg" class="save-status">✅ Guardado automáticamente</span>
+            <button onclick="saveData(true)" style="background:#007bff; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold;">💾 Guardar Todo Mi Progreso</button>
+        </div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="nav-btn active" onclick="switchTab('cv')">Currículum Vitae</button>
+        <button class="nav-btn" onclick="switchTab('ppt')">PowerPoint (UCNL)</button>
+        <button class="nav-btn" onclick="switchTab('excel')">Excel (30 Plantillas)</button>
+    </div>
+
+    <div id="cv" class="section active">
+        <div class="sticky-toolbar">
+            <span>🎨 Estilo (1-30):</span>
+            <input type="range" id="cvStyle" min="1" max="30" value="1" oninput="renderCV()" style="width:100px">
+            
+            <div style="border-left:1px solid #777; padding-left:10px; display:flex; gap:5px; align-items:center;">
+                <strong>TEXTO:</strong>
+                <button class="tool-btn" onclick="formatDoc('bold')"><i class="fas fa-bold"></i></button>
+                <button class="tool-btn" onclick="formatDoc('italic')"><i class="fas fa-italic"></i></button>
+                <input type="color" id="txtColorPicker" style="height:32px; width:40px; cursor:pointer; border:none; padding:0;">
+                <button class="tool-btn" onclick="applyColor()">Color</button>
+                <button class="tool-btn" onclick="formatDoc('foreColor', '#FFFFFF')" style="background:white; color:black; font-weight:bold;">⚪ Blanco</button>
+            </div>
+            <button onclick="downloadPDF()" style="margin-left:auto; background:#28a745; border:none; color:white; padding:10px 20px; font-weight:bold; cursor:pointer; border-radius:5px;">⬇️ Descargar PDF</button>
+        </div>
+
+        <div id="cv-layout">
+            <div style="max-height:1000px; overflow-y:auto; padding-right:10px;">
+                <div class="form-section">
+                    <h4>Datos Personales</h4>
+                    <label>Foto:</label> <input type="file" accept="image/*" onchange="loadImg(this, 'photo')"><br><br>
+                    <label>Nombre:</label><div id="cvName" class="rich-input" contenteditable="true" oninput="renderCV()">Juan Pérez</div>
+                    <label>Título:</label><div id="cvTitle" class="rich-input" contenteditable="true" oninput="renderCV()">Licenciado en Administración</div>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                        <div><label>Ciudad:</label><div id="cvCity" class="rich-input" contenteditable="true" oninput="renderCV()">Monterrey, Nuevo León</div></div>
+                        <div><label>Teléfono:</label><div id="cvPhone" class="rich-input" contenteditable="true" oninput="renderCV()">81-1234-5678</div></div>
+                        <div><label>Email:</label><div id="cvEmail" class="rich-input" contenteditable="true" oninput="renderCV()">juan@mail.com</div></div>
+                        <div><label>LinkedIn:</label><div id="cvLinkedin" class="rich-input" contenteditable="true" oninput="renderCV()">linkedin.com/in/juan</div></div>
+                        <div style="grid-column: span 2;"><label>Web:</label><div id="cvWeb" class="rich-input" contenteditable="true" oninput="renderCV()">miportafolio.com</div></div>
+                    </div>
+                </div>
+
+                <div class="form-section"><h4>Perfil</h4><div id="cvProfile" class="rich-input" contenteditable="true" oninput="renderCV()">Profesional con experiencia...</div></div>
+                
+                <div class="form-section"><h4>Estudios <button class="btn-sm" style="background:var(--primary)" onclick="addEdu()">+</button></h4><div id="edu-list"></div></div>
+                <div class="form-section"><h4>Experiencia <button class="btn-sm" style="background:var(--primary)" onclick="addJob()">+</button></h4><div id="job-list"></div></div>
+                
+                <div class="form-section"><h4>Proyectos <button class="btn-sm" style="background:var(--primary)" onclick="addProject()">+</button></h4><div id="project-list"></div></div>
+                <div class="form-section"><h4>Certificaciones <button class="btn-sm" style="background:var(--primary)" onclick="addCert()">+</button></h4><div id="cert-list"></div></div>
+
+                <div class="form-section"><h4>Logros <button class="btn-sm" style="background:var(--primary)" onclick="addSimple('ach')">+</button></h4><div id="ach-list"></div></div>
+                <div class="form-section"><h4>Habilidades (General) <button class="btn-sm" style="background:var(--primary)" onclick="addSimple('skill')">+</button></h4><div id="skill-list"></div></div>
+                <div class="form-section"><h4>Habilidades Técnicas <button class="btn-sm" style="background:var(--primary)" onclick="addSimple('tech')">+</button></h4><div id="tech-list"></div></div>
+                <div class="form-section"><h4>Habilidades Personales <button class="btn-sm" style="background:var(--primary)" onclick="addSimple('soft')">+</button></h4><div id="soft-list"></div></div>
+                <div class="form-section"><h4>Idiomas <button class="btn-sm" style="background:var(--primary)" onclick="addSimple('lang')">+</button></h4><div id="lang-list"></div></div>
+            </div>
+            <div id="cv-preview-box"><div id="cv-paper"></div></div>
+        </div>
+    </div>
+
+    <div id="ppt" class="section">
+        <div style="text-align:center; margin-bottom:20px;">
+            <h2>Generador PowerPoint UCNL</h2>
+            <label>Estilo (1-30): <span id="pptStyleVal" style="font-weight:bold;">1</span></label>
+            <input type="range" id="pptStyle" min="1" max="30" value="1" oninput="renderPPTPreview()" style="width:200px">
+            <br><br>
+            <button onclick="downloadPPTX()" style="background:#d35400; color:white; border:none; padding:15px 30px; font-weight:bold; cursor:pointer; font-size:16px; border-radius:5px;">⬇️ Descargar Presentación (.pptx)</button>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:30px;">
+            <div style="flex:1; background:#f8f9fa; padding:25px; border-radius:8px; border:1px solid #ddd;">
+                <h3 style="margin-top:0;">Datos de Portada</h3>
+                <div style="background:#e9ecef; padding:10px; border-radius:5px; margin-bottom:15px;">
+                    <label style="font-weight:bold;">Subir Logo / Imagen:</label> 
+                    <input type="file" accept="image/png, image/jpeg" onchange="loadPPTImage(this)">
+                </div>
+                <div style="display:grid; gap:12px;">
+                    <label>Título: <input type="text" id="pptTitle" value="Proyecto Final 2025" onkeyup="renderPPTPreview()" class="rich-input"></label>
+                    <label>Alumno: <input type="text" id="pptName" value="Juan Pérez" onkeyup="renderPPTPreview()" class="rich-input"></label>
+                    <label>Matrícula: <input type="text" id="pptMat" value="L00123456" onkeyup="renderPPTPreview()" class="rich-input"></label>
+                    <label>Grupo: <input type="text" id="pptGroup" value="G-105" onkeyup="renderPPTPreview()" class="rich-input"></label>
+                    <label>Tutor: <input type="text" id="pptTutor" value="Mtra. Rodríguez" onkeyup="renderPPTPreview()" class="rich-input"></label>
+                    <label>Materia: <input type="text" id="pptSubject" value="Administración" onkeyup="renderPPTPreview()" class="rich-input"></label>
+                    <label>Fecha: <input type="text" id="pptDate" value="Diciembre 2025" onkeyup="renderPPTPreview()" class="rich-input"></label>
+                </div>
+            </div>
+            <div style="flex:2; text-align:center;">
+                <h3>Vista Previa</h3>
+                <canvas id="pptCanvas" width="960" height="540" style="width:100%; max-width:850px; border:1px solid #999; box-shadow:0 5px 15px rgba(0,0,0,0.2);"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id="excel" class="section">
+        <div class="sticky-toolbar" style="background: #217346;">
+            <label>Plantilla:</label>
+            <select id="excelSelector" onchange="renderExcelPreview()" style="padding:5px; font-weight:bold;"></select>
+            <button onclick="downloadExcel()" style="background:white; color:#217346; border:none; padding:5px 15px; font-weight:bold; cursor:pointer;">⬇️ Descargar Excel</button>
+        </div>
+        <div id="excel-preview-box" style="overflow-x:auto; background:white; padding:15px; box-shadow: inset 0 0 10px #eee; min-height:300px;"></div>
+    </div>
+
+</div>
+
+<script>
+    // ================= STATE =================
+    let cv = {
+        photo: '',
+        edu: [{id:1, level:'Licenciatura', name:'Administración', school:'UCNL', start:'2015', end:'2019', status:'Titulado', grade:'9.5', dist:'Excelencia Académica', logo:''}],
+        job: [{id:1, title:'Gerente', company:'Empresa Global', start:'2020', end:'Actual', reason:'Actual', desc:'Liderazgo...', logo:''}],
+        project: [{id:1, title:'Implementación ERP', client:'Cliente Interno', date:'2024', desc:'Migración de sistemas...', logo:''}],
+        cert: [{id:1, title:'Certificación Excel', issuer:'Microsoft', date:'2023', desc:'Nivel Experto', logo:''}],
+        ach: [{id:1, text:'Ventas +20%'}], skill: [{id:1, text:'Liderazgo'}], tech: [{id:1, text:'Excel Avanzado'}], soft: [{id:1, text:'Comunicación'}], lang: [{id:1, text:'Inglés Avanzado'}]
+    };
+    let pptLogo = null;
+    let pptImgObj = new Image();
+
+    // ================= STORAGE / SAVE LOGIC (NEW) =================
+    function saveData(manual = false) {
+        // Collect Rich Text Fields for CV
+        const cvHtmlFields = {
+            name: document.getElementById('cvName').innerHTML,
+            title: document.getElementById('cvTitle').innerHTML,
+            city: document.getElementById('cvCity').innerHTML,
+            phone: document.getElementById('cvPhone').innerHTML,
+            email: document.getElementById('cvEmail').innerHTML,
+            linkedin: document.getElementById('cvLinkedin').innerHTML,
+            web: document.getElementById('cvWeb').innerHTML,
+            profile: document.getElementById('cvProfile').innerHTML
+        };
+
+        // Collect PPT Inputs
+        const pptFields = {
+            title: document.getElementById('pptTitle').value,
+            name: document.getElementById('pptName').value,
+            mat: document.getElementById('pptMat').value,
+            group: document.getElementById('pptGroup').value,
+            tutor: document.getElementById('pptTutor').value,
+            subject: document.getElementById('pptSubject').value,
+            date: document.getElementById('pptDate').value,
+            style: document.getElementById('pptStyle').value
+        };
+
+        const globalState = {
+            cv: cv,
+            cvHtml: cvHtmlFields,
+            cvStyle: document.getElementById('cvStyle').value,
+            ppt: pptFields,
+            pptLogo: pptLogo, // Saves image data
+            excelIdx: document.getElementById('excelSelector').value
+        };
+
+        try {
+            localStorage.setItem('ultimateGenState', JSON.stringify(globalState));
+            if(manual) alert("✅ ¡Progreso Guardado con Éxito!");
+            // Visual indicator for auto-save
+            const badge = document.getElementById('autoSaveMsg');
+            badge.style.display = 'block';
+            setTimeout(() => badge.style.display = 'none', 2000);
+        } catch (e) {
+            if(manual) alert("⚠️ Advertencia: No se pudo guardar todo (quizás las imágenes son muy pesadas). El texto sí se guardó.");
+        }
+    }
+
+    function loadData() {
+        const saved = localStorage.getItem('ultimateGenState');
+        if(saved) {
+            const data = JSON.parse(saved);
+            
+            // Restore CV Object
+            if(data.cv) cv = data.cv;
+            
+            // Restore CV HTML Fields
+            if(data.cvHtml) {
+                document.getElementById('cvName').innerHTML = data.cvHtml.name || '';
+                document.getElementById('cvTitle').innerHTML = data.cvHtml.title || '';
+                document.getElementById('cvCity').innerHTML = data.cvHtml.city || '';
+                document.getElementById('cvPhone').innerHTML = data.cvHtml.phone || '';
+                document.getElementById('cvEmail').innerHTML = data.cvHtml.email || '';
+                document.getElementById('cvLinkedin').innerHTML = data.cvHtml.linkedin || '';
+                document.getElementById('cvWeb').innerHTML = data.cvHtml.web || '';
+                document.getElementById('cvProfile').innerHTML = data.cvHtml.profile || '';
+            }
+            if(data.cvStyle) document.getElementById('cvStyle').value = data.cvStyle;
+
+            // Restore PPT
+            if(data.ppt) {
+                document.getElementById('pptTitle').value = data.ppt.title || '';
+                document.getElementById('pptName').value = data.ppt.name || '';
+                document.getElementById('pptMat').value = data.ppt.mat || '';
+                document.getElementById('pptGroup').value = data.ppt.group || '';
+                document.getElementById('pptTutor').value = data.ppt.tutor || '';
+                document.getElementById('pptSubject').value = data.ppt.subject || '';
+                document.getElementById('pptDate').value = data.ppt.date || '';
+                document.getElementById('pptStyle').value = data.ppt.style || '1';
+            }
+            if(data.pptLogo) {
+                pptLogo = data.pptLogo;
+                pptImgObj.src = pptLogo;
+            }
+
+            // Restore Excel
+            if(data.excelIdx) document.getElementById('excelSelector').value = data.excelIdx;
+        }
+    }
+
+    // Trigger auto-save on rendering or input
+    function triggerAutoSave() {
+        saveData(false);
+    }
+
+    // ================= INIT =================
+    // Excel Definitions
+    const excelDefinitions = [
+        { t: "Presupuesto Mensual", c:"#27ae60", h: ["Categoría", "Estimado", "Real", "Diferencia", "Notas"] },
+        { t: "Inventario Almacén", c:"#2980b9", h: ["SKU", "Producto", "Stock Inicial", "Entradas", "Salidas", "Stock Final"] },
+        { t: "Lista Asistencia", c:"#8e44ad", h: ["Nombre", "ID", "Lun", "Mar", "Mie", "Jue", "Vie", "Total"] },
+        { t: "Calendario Editorial", c:"#e67e22", h: ["Fecha", "Plataforma", "Copy", "Link", "Estado", "Stats"] },
+        { t: "Factura Servicios", c:"#c0392b", h: ["Descripción", "Cantidad", "Precio Unit.", "Subtotal", "IVA", "Total"] },
+        { t: "Gantt Proyecto", c:"#2c3e50", h: ["Tarea", "Responsable", "Inicio", "Fin", "Días", "Estado"] },
+        { t: "Base Clientes", c:"#16a085", h: ["Nombre", "Empresa", "Email", "Teléfono", "Último Contacto"] },
+        { t: "Registro Ventas", c:"#d35400", h: ["Fecha", "Cliente", "Producto", "Total", "Forma Pago"] },
+        { t: "Gastos Viaje", c:"#7f8c8d", h: ["Fecha", "Concepto", "Monto", "Factura", "Aprobado"] },
+        { t: "Comparativa Prov.", c:"#34495e", h: ["Item", "Prov A", "$", "Prov B", "$", "Mejor Opción"] },
+        { t: "Entrenamiento", c:"#e74c3c", h: ["Día", "Ejercicio", "Series", "Reps", "Peso", "Descanso"] },
+        { t: "Nómina Empleados", c:"#2ecc71", h: ["Empleado", "Sueldo Base", "Bonos", "Deducciones", "Neto a Pagar"] },
+        { t: "Control Vehicular", c:"#f39c12", h: ["Vehículo", "Chofer", "Km Salida", "Km Llegada", "Gasolina"] },
+        { t: "Lista Super", c:"#1abc9c", h: ["Depto", "Artículo", "Marca", "Cantidad", "Precio Est."] },
+        { t: "Agenda VIP", c:"#9b59b6", h: ["Nombre", "Relación", "Móvil", "Cumpleaños", "Email"] },
+        { t: "Reporte Incidentes", c:"#3498db", h: ["Fecha", "Incidente", "Gravedad", "Acción", "Reporta"] },
+        { t: "Análisis FODA", c:"#e84393", h: ["Fortalezas", "Oportunidades", "Debilidades", "Amenazas", "Estrategia"] },
+        { t: "Balance General", c:"#00cec9", h: ["Cuenta", "Activo", "Pasivo", "Capital", "Saldo"] },
+        { t: "Calificaciones", c:"#6c5ce7", h: ["Alumno", "Parcial 1", "Parcial 2", "Final", "Promedio"] },
+        { t: "Préstamos Equipo", c:"#fdcb6e", h: ["Equipo", "Prestado A", "Fecha Salida", "Fecha Retorno", "Estado"] },
+        { t: "Mantenimiento", c:"#636e72", h: ["Equipo", "Fecha Mant.", "Tipo", "Costo", "Próximo Mant."] },
+        { t: "CRM Ventas", c:"#d63031", h: ["Prospecto", "Etapa", "Valor", "Probabilidad", "Cierre Est."] },
+        { t: "Horas Trabajo", c:"#0984e3", h: ["Fecha", "Entrada", "Salida", "Horas Totales", "Proyecto"] },
+        { t: "Organizador Eventos", c:"#b2bec3", h: ["Hora", "Actividad", "Salón", "Responsable", "Status"] },
+        { t: "Plan Ahorro", c:"#00b894", h: ["Mes", "Meta", "Ahorrado", "Diferencia", "Acumulado"] },
+        { t: "Biblioteca", c:"#55efc4", h: ["Título", "Autor", "Editorial", "Prestado A", "Fecha"] },
+        { t: "Devoluciones", c:"#81ecec", h: ["Ticket", "Producto", "Causa", "Acción", "Autoriza"] },
+        { t: "Dieta Semanal", c:"#a29bfe", h: ["Comida", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] },
+        { t: "Suscripciones", c:"#ffeaa7", h: ["Servicio", "Costo", "Corte", "Tarjeta", "Status"] },
+        { t: "Metas Anuales", c:"#ff7675", h: ["Meta", "KPI", "Fecha Límite", "Avance %", "Status"] }
+    ];
+
+    window.onload = function() {
+        // 1. Populate Excel
+        const sel = document.getElementById('excelSelector');
+        excelDefinitions.forEach((d, i) => { let opt = document.createElement('option'); opt.value = i; opt.text = `${i+1}. ${d.t}`; sel.appendChild(opt); });
+        
+        // 2. Load Saved Data
+        loadData();
+
+        // 3. Render Everything
+        renderEduInputs(); renderJobInputs(); renderProjectInputs(); renderCertInputs();
+        renderSimpleInputs('ach'); renderSimpleInputs('skill'); renderSimpleInputs('tech'); renderSimpleInputs('soft'); renderSimpleInputs('lang');
+        renderCV(); 
+        setTimeout(() => renderExcelPreview(), 500); 
+        renderPPTPreview(); 
+    };
+
+    function switchTab(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.target.classList.add('active');
+        if(id==='ppt') renderPPTPreview();
+        if(id==='excel') renderExcelPreview();
+    }
+    
+    function formatDoc(cmd, value=null) { document.execCommand(cmd, false, value); triggerAutoSave(); }
+    function applyColor() { formatDoc('foreColor', document.getElementById('txtColorPicker').value); }
+    function loadImg(input, target) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if(target === 'photo') cv.photo = e.target.result;
+                else { const [t, id] = target.split('-'); cv[t].find(x => x.id == id).logo = e.target.result; }
+                renderCV();
+                triggerAutoSave();
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // ================= HELPER FUNCTIONS =================
+    function addEdu() { cv.edu.push({id:Date.now(), level:'Licenciatura', name:'', school:'', start:'', end:'', status:'Titulado', grade:'', dist:'', logo:''}); renderEduInputs(); renderCV(); triggerAutoSave(); }
+    function addJob() { cv.job.push({id:Date.now(), title:'', company:'', start:'', end:'', reason:'Actual', desc:'', logo:''}); renderJobInputs(); renderCV(); triggerAutoSave(); }
+    function addProject() { cv.project.push({id:Date.now(), title:'', client:'', date:'', desc:'', logo:''}); renderProjectInputs(); renderCV(); triggerAutoSave(); }
+    function addCert() { cv.cert.push({id:Date.now(), title:'', issuer:'', date:'', desc:'', logo:''}); renderCertInputs(); renderCV(); triggerAutoSave(); }
+    function addSimple(type) { cv[type].push({id:Date.now(), text:''}); renderSimpleInputs(type); renderCV(); triggerAutoSave(); }
+    
+    function updateCVList(type, id, field, val) { cv[type].find(x => x.id === id)[field] = val; renderCV(); triggerAutoSave(); }
+    function updateJobTitleFromSelect(id, value) { if(value!=='Otro' && value!=='') { document.getElementById('job-title-'+id).innerText=value; updateCVList('job', id, 'title', value); } }
+    
+    function moveItem(type, i, dir) { 
+        const arr = cv[type]; 
+        if((dir===-1 && i>0) || (dir===1 && i<arr.length-1)) { 
+            [arr[i], arr[i+dir]] = [arr[i+dir], arr[i]]; 
+            if(type=='edu') renderEduInputs(); else if(type=='job') renderJobInputs(); else if(type=='project') renderProjectInputs(); else if(type=='cert') renderCertInputs(); else renderSimpleInputs(type);
+            renderCV(); triggerAutoSave();
+        } 
+    }
+    function removeItem(type, id) { 
+        cv[type] = cv[type].filter(x => x.id !== id); 
+        if(type=='edu') renderEduInputs(); else if(type=='job') renderJobInputs(); else if(type=='project') renderProjectInputs(); else if(type=='cert') renderCertInputs(); else renderSimpleInputs(type);
+        renderCV(); triggerAutoSave();
+    }
+
+    // ================= RENDER INPUTS =================
+    function renderEduInputs() {
+        document.getElementById('edu-list').innerHTML = cv.edu.map((e, i) => `
+            <div class="item-row">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                        <label>Nivel Educativo:</label>
+                        <select class="custom-select" onchange="updateCVList('edu',${e.id},'level',this.value)">
+                            <option value="Licenciatura" ${e.level==='Licenciatura'?'selected':''}>Licenciatura</option>
+                            <option value="Maestría" ${e.level==='Maestría'?'selected':''}>Maestría</option>
+                            <option value="Doctorado" ${e.level==='Doctorado'?'selected':''}>Doctorado</option>
+                            <option value="Diplomado" ${e.level==='Diplomado'?'selected':''}>Diplomado</option>
+                            <option value="Técnico" ${e.level==='Técnico'?'selected':''}>Técnico</option>
+                            <option value="Bachillerato" ${e.level==='Bachillerato'?'selected':''}>Bachillerato</option>
+                        </select>
+                        <div class="rich-input" contenteditable="true" placeholder="Nombre Carrera" oninput="updateCVList('edu',${e.id},'name',this.innerHTML)">${e.name}</div>
+                    </div>
+                    <div><label>Escuela:</label><div class="rich-input" contenteditable="true" oninput="updateCVList('edu',${e.id},'school',this.innerHTML)">${e.school}</div></div>
+                </div>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <input class="rich-input" style="width:20%" placeholder="Ini" value="${e.start}" oninput="updateCVList('edu',${e.id},'start',this.value)">
+                    <input class="rich-input" style="width:20%" placeholder="Fin" value="${e.end}" oninput="updateCVList('edu',${e.id},'end',this.value)">
+                    <select class="custom-select" style="width:40%" onchange="updateCVList('edu',${e.id},'status',this.value)">
+                        <option value="Titulado" ${e.status==='Titulado'?'selected':''}>Titulado</option>
+                        <option value="Cédula Profesional" ${e.status==='Cédula Profesional'?'selected':''}>Cédula Profesional</option>
+                        <option value="Certificado" ${e.status==='Certificado'?'selected':''}>Certificado</option>
+                        <option value="En Curso" ${e.status==='En Curso'?'selected':''}>En Curso</option>
+                        <option value="Trunco" ${e.status==='Trunco'?'selected':''}>Trunco</option>
+                        <option value="Pasante" ${e.status==='Pasante'?'selected':''}>Pasante</option>
+                    </select>
+                    <input class="rich-input" style="width:20%" placeholder="Promedio" value="${e.grade}" oninput="updateCVList('edu',${e.id},'grade',this.value)">
+                </div>
+                <div style="margin-top:5px;">
+                    <label>Distinción / Logro:</label>
+                    <select class="custom-select" onchange="updateCVList('edu',${e.id},'dist',this.value)">
+                        <option value="">Sin Distinción</option>
+                        <option value="Excelencia Académica" ${e.dist==='Excelencia Académica'?'selected':''}>Excelencia Académica</option>
+                        <option value="Mención Honorífica" ${e.dist==='Mención Honorífica'?'selected':''}>Mención Honorífica</option>
+                        <option value="Titulado por Promedio" ${e.dist==='Titulado por Promedio'?'selected':''}>Titulado por Promedio</option>
+                        <option value="Magna Cum Laude" ${e.dist==='Magna Cum Laude'?'selected':''}>Magna Cum Laude</option>
+                        <option value="Summa Cum Laude" ${e.dist==='Summa Cum Laude'?'selected':''}>Summa Cum Laude</option>
+                        <option value="Cuadro de Honor" ${e.dist==='Cuadro de Honor'?'selected':''}>Cuadro de Honor</option>
+                    </select>
+                </div>
+                <div style="margin-top:5px;"><label>Subir Logo (Img):</label> <input type="file" onchange="loadImg(this, 'edu-${e.id}')"></div>
+                <div style="text-align:right; margin-top:5px;"><button class="btn-sm btn-up" onclick="moveItem('edu',${i},-1)">⬆️</button><button class="btn-sm btn-down" onclick="moveItem('edu',${i},1)">⬇️</button><button class="btn-sm btn-del" onclick="removeItem('edu',${e.id})">✖</button></div>
+            </div>`).join('');
+    }
+
+    function renderJobInputs() {
+        document.getElementById('job-list').innerHTML = cv.job.map((j, i) => `
+            <div class="item-row">
+                <select class="custom-select" onchange="updateJobTitleFromSelect(${j.id}, this.value)">
+                    <option value="">-- Seleccionar Puesto --</option>
+                    <option value="Fundador / CEO">Fundador / CEO</option>
+                    <option value="Gerente">Gerente</option>
+                    <option value="Supervisor">Supervisor</option>
+                    <option value="Administrativo">Administrativo</option>
+                    <option value="Operativo">Operativo</option>
+                    <option value="Recursos Humanos">Recursos Humanos</option>
+                    <option value="Ventas">Ventas</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <div id="job-title-${j.id}" class="rich-input" contenteditable="true" oninput="updateCVList('job',${j.id},'title',this.innerHTML)">${j.title}</div>
+                <div class="rich-input" contenteditable="true" style="margin-top:5px;" oninput="updateCVList('job',${j.id},'company',this.innerHTML)">${j.company}</div>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <input class="rich-input" placeholder="Ini" value="${j.start}" oninput="updateCVList('job',${j.id},'start',this.value)">
+                    <input class="rich-input" placeholder="Fin" value="${j.end}" oninput="updateCVList('job',${j.id},'end',this.value)">
+                    <select class="custom-select" onchange="updateCVList('job',${j.id},'reason',this.value)">
+                        <option value="Actual" ${j.reason==='Actual'?'selected':''}>Actual</option>
+                        <option value="Mejor Oportunidad" ${j.reason==='Mejor Oportunidad'?'selected':''}>Mejor Oportunidad</option>
+                        <option value="Renuncia Voluntaria" ${j.reason==='Renuncia Voluntaria'?'selected':''}>Renuncia Voluntaria</option>
+                        <option value="Término de Contrato" ${j.reason==='Término de Contrato'?'selected':''}>Término de Contrato</option>
+                        <option value="Despido Injustificado" ${j.reason==='Despido Injustificado'?'selected':''}>Despido Injustificado</option>
+                        <option value="Recorte de Personal" ${j.reason==='Recorte de Personal'?'selected':''}>Recorte de Personal</option>
+                        <option value="Otro" ${j.reason==='Otro'?'selected':''}>Otro</option>
+                    </select>
+                </div>
+                <div class="rich-input" contenteditable="true" style="margin-top:5px;" oninput="updateCVList('job',${j.id},'desc',this.innerHTML)">${j.desc}</div>
+                <div style="margin-top:5px;"><label>Subir Logo (Img):</label> <input type="file" onchange="loadImg(this, 'job-${j.id}')"></div>
+                <div style="text-align:right; margin-top:5px;"><button class="btn-sm btn-up" onclick="moveItem('job',${i},-1)">⬆️</button><button class="btn-sm btn-down" onclick="moveItem('job',${i},1)">⬇️</button><button class="btn-sm btn-del" onclick="removeItem('job',${j.id})">✖</button></div>
+            </div>`).join('');
+    }
+
+    function renderProjectInputs() {
+        document.getElementById('project-list').innerHTML = cv.project.map((p, i) => `
+            <div class="item-row">
+                <label>Proyecto:</label><div class="rich-input" contenteditable="true" oninput="updateCVList('project',${p.id},'title',this.innerHTML)">${p.title}</div>
+                <label style="margin-top:5px;">Cliente/Contexto:</label><div class="rich-input" contenteditable="true" oninput="updateCVList('project',${p.id},'client',this.innerHTML)">${p.client}</div>
+                <label style="margin-top:5px;">Fechas:</label><div class="rich-input" contenteditable="true" oninput="updateCVList('project',${p.id},'date',this.innerHTML)">${p.date}</div>
+                <label style="margin-top:5px;">Descripción:</label><div class="rich-input" contenteditable="true" oninput="updateCVList('project',${p.id},'desc',this.innerHTML)">${p.desc}</div>
+                <div style="margin-top:5px;"><label>Imagen/Evidencia:</label> <input type="file" onchange="loadImg(this, 'project-${p.id}')"></div>
+                <div style="text-align:right; margin-top:5px;"><button class="btn-sm btn-up" onclick="moveItem('project',${i},-1)">⬆️</button><button class="btn-sm btn-down" onclick="moveItem('project',${i},1)">⬇️</button><button class="btn-sm btn-del" onclick="removeItem('project',${p.id})">✖</button></div>
+            </div>`).join('');
+    }
+
+    function renderCertInputs() {
+        document.getElementById('cert-list').innerHTML = cv.cert.map((c, i) => `
+            <div class="item-row">
+                <label>Certificación:</label><div class="rich-input" contenteditable="true" oninput="updateCVList('cert',${c.id},'title',this.innerHTML)">${c.title}</div>
+                <label style="margin-top:5px;">Emisor/Institución:</label><div class="rich-input" contenteditable="true" oninput="updateCVList('cert',${c.id},'issuer',this.innerHTML)">${c.issuer}</div>
+                <label style="margin-top:5px;">Fecha/ID:</label><div class="rich-input" contenteditable="true" oninput="updateCVList('cert',${c.id},'date',this.innerHTML)">${c.date}</div>
+                <div style="margin-top:5px;"><label>Logo/Imagen:</label> <input type="file" onchange="loadImg(this, 'cert-${c.id}')"></div>
+                <div style="text-align:right; margin-top:5px;"><button class="btn-sm btn-up" onclick="moveItem('cert',${i},-1)">⬆️</button><button class="btn-sm btn-down" onclick="moveItem('cert',${i},1)">⬇️</button><button class="btn-sm btn-del" onclick="removeItem('cert',${c.id})">✖</button></div>
+            </div>`).join('');
+    }
+
+    function renderSimpleInputs(type) {
+        document.getElementById(type+'-list').innerHTML = cv[type].map((x, i) => `
+            <div style="display:flex; gap:5px; margin-bottom:5px;">
+                <div class="rich-input" contenteditable="true" oninput="updateCVList('${type}',${x.id},'text',this.innerHTML)" style="flex:1;">${x.text}</div>
+                <button class="btn-sm btn-up" onclick="moveItem('${type}',${i},-1)">⬆</button>
+                <button class="btn-sm btn-down" onclick="moveItem('${type}',${i},1)">⬇</button>
+                <button class="btn-sm btn-del" onclick="removeItem('${type}',${x.id})">✖</button>
+            </div>`).join('');
+    }
+
+    // ================= CV RENDER ENGINE (FECHAS VISIBLES) =================
+    function renderCV() {
+        const style = parseInt(document.getElementById('cvStyle').value);
+        const palettes = ['#2c3e50', '#2980b9', '#8e44ad', '#16a085', '#c0392b', '#d35400', '#27ae60', '#34495e', '#7f8c8d', '#000000', '#003366', '#800000', '#006600', '#660066', '#993300', '#4a4a4a', '#008080', '#483D8B', '#556B2F', '#A0522D', '#191970', '#8B0000', '#2F4F4F', '#4B0082', '#000080', '#333333', '#0056b3', '#B22222', '#228B22', '#FF4500'];
+        const color = palettes[style-1];
+
+        const name = document.getElementById('cvName').innerHTML;
+        const title = document.getElementById('cvTitle').innerHTML;
+        const profileHTML = document.getElementById('cvProfile').innerHTML;
+        
+        // CONTACTO INCLUYENDO CIUDAD
+        const contactIcons = `<div style="font-size:0.85em; display:flex; gap:10px; flex-wrap:wrap; margin-top:5px;">
+            <span>📍 ${document.getElementById('cvCity').innerHTML}</span>
+            <span>📞 ${document.getElementById('cvPhone').innerHTML}</span>
+            <span>✉️ ${document.getElementById('cvEmail').innerHTML}</span>
+            <span>🔗 ${document.getElementById('cvLinkedin').innerHTML}</span>
+            <span>🌐 ${document.getElementById('cvWeb').innerHTML}</span>
+        </div>`;
+        const contactList = `<div style="font-size:0.9em; line-height:1.6;">
+            <div>📍 ${document.getElementById('cvCity').innerHTML}</div>
+            <div>📞 ${document.getElementById('cvPhone').innerHTML}</div>
+            <div>✉️ ${document.getElementById('cvEmail').innerHTML}</div>
+            <div>🔗 ${document.getElementById('cvLinkedin').innerHTML}</div>
+            <div>🌐 ${document.getElementById('cvWeb').innerHTML}</div>
+        </div>`;
+
+        let html = `<div style="font-family: 'Segoe UI', Arial, sans-serif; color:#333; height:100%;">`;
+        
+        // Bloques HTML
+        const projectsHTML = cv.project.length > 0 ? `<h3 style="border-bottom:2px solid ${color}; color:${color}; padding-bottom:5px; margin-top:20px;">PROYECTOS</h3>` + cv.project.map(p => `<div style="margin-bottom:15px;">${p.logo ? `<img src="${p.logo}" style="height:40px; float:right; object-fit:contain; margin-left:10px;">` : ''}<div style="font-weight:bold; font-size:1.05em;">${p.title}</div><div style="color:#555; font-size:0.95em;">${p.client} | ${p.date}</div><div style="margin-top:3px;">${p.desc}</div><div style="clear:both;"></div></div>`).join('') : '';
+        const certsHTML = cv.cert.length > 0 ? `<h3 style="border-bottom:2px solid ${color}; color:${color}; padding-bottom:5px; margin-top:20px;">CERTIFICACIONES</h3>` + cv.cert.map(c => `<div style="margin-bottom:15px;">${c.logo ? `<img src="${c.logo}" style="height:35px; float:right; object-fit:contain; margin-left:10px;">` : ''}<strong>${c.title}</strong><br><small>${c.issuer} | ${c.date}</small><div style="clear:both;"></div></div>`).join('') : '';
+
+        // Estilos 1-10
+        if (style <= 10) {
+            const align = (style % 2 === 0) ? 'center' : 'left';
+            html += `<div style="background:${color}; color:white; padding:30px; text-align:${align};">${cv.photo ? `<img src="${cv.photo}" style="width:120px; height:120px; border-radius:50%; border:4px solid white; object-fit:contain; margin-bottom:10px;">` : ''}<h1 style="margin:0; text-transform:uppercase; font-size:28px;">${name}</h1><h3 style="margin:5px 0; font-weight:normal; opacity:0.9;">${title}</h3><div style="margin-top:10px; justify-content:${align}; display:flex;">${contactIcons.replace(/color:black/g, 'color:white')}</div></div><div style="padding:30px;"><h3 style="border-bottom:2px solid ${color}; color:${color}; padding-bottom:5px;">PERFIL</h3><div style="margin-bottom:20px;">${profileHTML}</div><h3 style="border-bottom:2px solid ${color}; color:${color}; padding-bottom:5px;">EXPERIENCIA</h3>${cv.job.map(j => `<div style="margin-bottom:15px;">${j.logo ? `<img src="${j.logo}" style="height:40px; float:right; object-fit:contain; margin-left:10px;">` : ''}<strong>${j.title}</strong> | ${j.company} <span style="float:right; font-weight:bold; color:${color}">${j.start}-${j.end}</span><br><small>Estatus: ${j.reason}</small><br>${j.desc}<div style="clear:both;"></div></div>`).join('')}${projectsHTML}<h3 style="border-bottom:2px solid ${color}; color:${color}; padding-bottom:5px;">EDUCACIÓN</h3>${cv.edu.map(e => `<div>${e.logo ? `<img src="${e.logo}" style="height:35px; float:right; object-fit:contain; margin-left:10px;">` : ''}<strong>${e.level}: ${e.name}</strong>, ${e.school} <span style="float:right; font-weight:bold; color:${color}">${e.start}-${e.end}</span><br><small>${e.status} | Promedio: ${e.grade} ${e.dist ? `| <strong>${e.dist}</strong>` : ''}</small><div style="clear:both;"></div></div>`).join('<br>')}${certsHTML}<h3 style="border-bottom:2px solid ${color}; color:${color}; padding-bottom:5px;">HABILIDADES</h3><p>${cv.skill.map(x=>x.text).join(' • ')}</p></div>`;
+        }
+        // Estilos 11-20
+        else if (style <= 20) {
+            const sideWidth = (style % 2 === 0) ? '35%' : '30%'; const sideBg = (style > 15) ? '#f4f4f4' : color; const sideTxt = (style > 15) ? '#333' : 'white';
+            html += `<div style="display:flex; min-height:297mm;"><div style="width:${sideWidth}; background:${sideBg}; color:${sideTxt}; padding:25px; text-align:left;">${cv.photo ? `<img src="${cv.photo}" style="width:100%; max-width:150px; border-radius:10px; margin-bottom:20px; display:block;">` : ''}<h2 style="font-size:22px; margin-bottom:5px;">${name}</h2><p style="margin-top:0; opacity:0.8;">${title}</p><br><h4 style="border-bottom:1px solid ${sideTxt}; padding-bottom:5px;">CONTACTO</h4>${contactList}<br><h4 style="border-bottom:1px solid ${sideTxt}; padding-bottom:5px;">IDIOMAS</h4>${cv.lang.map(x=>`<div>• ${x.text}</div>`).join('')}<br><h4 style="border-bottom:1px solid ${sideTxt}; padding-bottom:5px;">SKILLS</h4>${cv.tech.map(x=>`<div>• ${x.text}</div>`).join('')}</div><div style="width:${100-parseInt(sideWidth)}%; padding:30px;"><h3 style="color:${color}; border-left:5px solid ${color}; padding-left:10px;">PERFIL PROFESIONAL</h3>${profileHTML}<br><h3 style="color:${color}; border-left:5px solid ${color}; padding-left:10px;">EXPERIENCIA</h3>${cv.job.map(j => `<div style="margin-bottom:20px;">${j.logo ? `<img src="${j.logo}" style="height:40px; float:right; object-fit:contain; margin-left:10px;">` : ''}<div style="font-size:1.1em; font-weight:bold;">${j.title}</div><div style="color:#666;">${j.company} | <strong>${j.start}-${j.end}</strong></div><small>Estatus: ${j.reason}</small><div>${j.desc}</div><div style="clear:both;"></div></div>`).join('')}${projectsHTML.replace(/border-bottom/g, 'border-left').replace(/2px solid/g, '5px solid')}<h3 style="color:${color}; border-left:5px solid ${color}; padding-left:10px;">FORMACIÓN</h3>${cv.edu.map(e => `<div>${e.logo ? `<img src="${e.logo}" style="height:35px; float:right; object-fit:contain; margin-left:10px;">` : ''}<strong>${e.level}: ${e.name}</strong><br>${e.school} | <strong>${e.start}-${e.end}</strong><br><small>${e.status} | Promedio: ${e.grade} ${e.dist ? `| <strong>${e.dist}</strong>` : ''}</small><div style="clear:both;"></div></div>`).join('<br>')}${certsHTML.replace(/border-bottom/g, 'border-left').replace(/2px solid/g, '5px solid')}</div></div>`;
+        }
+        // Estilos 21-30
+        else {
+            html += `<div style="padding:40px; border-top:15px solid ${color};"><div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #ccc; padding-bottom:20px; margin-bottom:20px;"><div><h1 style="font-size:42px; color:#333; margin:0; letter-spacing:-1px;">${name}</h1><div style="color:${color}; font-size:18px; font-weight:bold; text-transform:uppercase;">${title}</div></div><div style="text-align:right; font-size:0.9em; color:#555;">${document.getElementById('cvCity').innerHTML} 📍<br>${document.getElementById('cvPhone').innerHTML} 📞<br>${document.getElementById('cvEmail').innerHTML} ✉️<br>${document.getElementById('cvLinkedin').innerHTML} 🔗</div></div><div style="display:grid; grid-template-columns: 2fr 1fr; gap:30px;"><div><h4 style="background:#f0f0f0; padding:5px 10px; border-left:4px solid ${color}; margin-top:0;">EXPERIENCIA PROFESIONAL</h4>${cv.job.map(j => `<div style="margin-bottom:20px;">${j.logo ? `<img src="${j.logo}" style="height:40px; float:right; object-fit:contain; margin-left:10px;">` : ''}<div style="display:flex; justify-content:space-between;"><strong style="font-size:1.1em;">${j.title}</strong><span style="background:${color}; color:white; padding:2px 6px; border-radius:3px; font-size:0.9em; font-weight:bold;">${j.start} - ${j.end}</span></div><div style="color:#555; font-weight:600;">${j.company}</div><small>Estatus: ${j.reason}</small><div style="margin-top:5px;">${j.desc}</div><div style="clear:both;"></div></div>`).join('')}${cv.project.length > 0 ? `<h4 style="background:#f0f0f0; padding:5px 10px; border-left:4px solid ${color};">PROYECTOS</h4>` + cv.project.map(p => `<div>${p.logo ? `<img src="${p.logo}" style="height:35px; float:right;">` : ''}<strong>${p.title}</strong><br><small>${p.client} | ${p.date}</small><br>${p.desc}<div style="clear:both;"></div></div>`).join('<br>') : ''}<h4 style="background:#f0f0f0; padding:5px 10px; border-left:4px solid ${color};">EDUCACIÓN</h4>${cv.edu.map(e => `<div>${e.logo ? `<img src="${e.logo}" style="height:30px; float:right;">` : ''}<strong>${e.level}: ${e.name}</strong><br>${e.school} (<strong>${e.start}-${e.end}</strong>)<br><small>Prom: ${e.grade} ${e.dist ? `| <strong>${e.dist}</strong>` : ''}</small><div style="clear:both;"></div></div>`).join('<br>')}${cv.cert.length>0 ? `<h4 style="background:#f0f0f0; padding:5px 10px; border-left:4px solid ${color};">CERTIFICACIONES</h4>` + cv.cert.map(c=>`<div>${c.logo?`<img src="${c.logo}" style="height:30px; float:right;">`:''}<strong>${c.title}</strong><br><small>${c.issuer}</small></div>`).join('<br>'):''}</div><div style="background:#fafafa; padding:15px; border-radius:5px;"><h4 style="color:${color}; margin-top:0;">PERFIL</h4><div style="font-size:0.9em;">${profileHTML}</div><h4 style="color:${color}; margin-top:20px;">LOGROS</h4><ul style="padding-left:15px;">${cv.ach.map(x=>`<li>${x.text}</li>`).join('')}</ul><h4 style="color:${color};">SKILLS</h4>${cv.skill.map(x=>`<span style="display:inline-block; background:white; border:1px solid #ddd; padding:3px 6px; margin:2px; font-size:0.85em;">${x.text}</span>`).join('')}</div></div></div>`;
+        }
+        html += `</div>`;
+        document.getElementById('cv-paper').innerHTML = html;
+        triggerAutoSave();
+    }
+
+    function downloadPDF() {
+        const content = document.getElementById('cv-paper').innerHTML;
+        const win = window.open('','','height=900,width=1000');
+        win.document.write(`<html><head><title>${document.getElementById('cvName').innerText}_CV</title>
+            <style>@page{margin:0;}body{margin:0;-webkit-print-color-adjust:exact;}</style>
+            </head><body>${content}</body></html>`);
+        win.document.close();
+        setTimeout(() => { win.focus(); win.print(); }, 500);
+    }
+
+    // ================= PPT RENDER ENGINE (INTACTO) =================
+    function loadPPTImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                pptLogo = e.target.result;
+                pptImgObj = new Image();
+                pptImgObj.src = pptLogo;
+                pptImgObj.onload = function() { renderPPTPreview(); triggerAutoSave(); }
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function renderPPTPreview() {
+        const canvas = document.getElementById('pptCanvas');
+        const ctx = canvas.getContext('2d');
+        const style = parseInt(document.getElementById('pptStyle').value);
+        document.getElementById('pptStyleVal').innerText = style;
+        ctx.fillStyle = "white"; ctx.fillRect(0,0,960,540);
+        const colors = [ {m:'#FF8C00',a:'#00FFFF'}, {m:'#0056b3',a:'#FFD700'}, {m:'#28a745',a:'#343a40'}, {m:'#6f42c1',a:'#e83e8c'}, {m:'#dc3545',a:'#17a2b8'} ];
+        const pal = colors[(style-1) % 5];
+        if(style <= 5) { ctx.fillStyle = pal.m; ctx.fillRect(0,0,300,540); ctx.fillStyle = pal.a; ctx.fillRect(300,0,30,540); }
+        else if (style <= 10) { ctx.fillStyle = pal.m; ctx.fillRect(0,0,960,100); ctx.fillStyle = pal.a; ctx.fillRect(0,100,960,20); }
+        else if (style <= 15) { ctx.fillStyle = pal.m; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(960,0); ctx.lineTo(0,540); ctx.fill(); }
+        else if (style <= 20) { ctx.fillStyle = pal.m; ctx.beginPath(); ctx.arc(0, 540, 400, 0, 2*Math.PI); ctx.fill(); ctx.fillStyle = pal.a; ctx.beginPath(); ctx.arc(960, 0, 200, 0, 2*Math.PI); ctx.fill(); }
+        else { ctx.fillStyle = pal.m; ctx.fillRect(0,440,960,100); ctx.fillStyle = pal.a; ctx.fillRect(0,420,960,20); }
+        if(pptLogo && pptImgObj.complete) { ctx.drawImage(pptImgObj, 800, 50, 100, 100); }
+        ctx.fillStyle = "#333"; ctx.font = "bold 36px Arial"; ctx.fillText(document.getElementById('pptTitle').value, 360, 100);
+        ctx.font = "24px Arial"; let y = 160; const gap = 35;
+        ctx.fillText("Alumno: " + document.getElementById('pptName').value, 360, y);
+        ctx.fillText("Matrícula: " + document.getElementById('pptMat').value, 360, y+gap);
+        ctx.fillText("Grupo: " + document.getElementById('pptGroup').value, 360, y+gap*2);
+        ctx.fillText("Tutor: " + document.getElementById('pptTutor').value, 360, y+gap*3);
+        ctx.fillText("Materia: " + document.getElementById('pptSubject').value, 360, y+gap*4);
+        ctx.fillText("Fecha: " + document.getElementById('pptDate').value, 360, y+gap*5);
+        triggerAutoSave();
+    }
+
+    function downloadPPTX() {
+        let pptx = new PptxGenJS(); pptx.layout = 'LAYOUT_16x9';
+        const style = parseInt(document.getElementById('pptStyle').value);
+        const colors = [ {m:'FF8C00',a:'00FFFF'}, {m:'0056b3',a:'FFD700'}, {m:'28a745',a:'343a40'}, {m:'6f42c1',a:'e83e8c'}, {m:'dc3545',a:'17a2b8'} ];
+        const pal = colors[(style-1)%5];
+        pptx.defineSlideMaster({ title: "MASTER", background: { color: "FFFFFF" }, objects: [ { rect: { x: 0, y: 0, w: "100%", h: 0.8, fill: pal.m } }, { text: { text: "UNIVERSIDAD CIUDADANA NUEVO LEÓN", options: { x:0, y:0.25, w:"100%", align:'center', fontSize:24, bold:true, color:"FFFFFF" } } } ] });
+        let slide = pptx.addSlide();
+        if(style<=5) { slide.addShape(pptx.shapes.RECTANGLE,{x:0,y:0,w:3,h:'100%',fill:pal.m}); }
+        else if(style<=10) { slide.addShape(pptx.shapes.RECTANGLE,{x:0,y:0,w:'100%',h:1.5,fill:pal.m}); }
+        else if(style<=15) { slide.addShape(pptx.shapes.RIGHT_TRIANGLE,{x:0,y:0,w:'100%',h:'100%',fill:pal.m, flipH:true}); }
+        else if(style<=20) { slide.addShape(pptx.shapes.OVAL,{x:-2,y:4,w:6,h:6,fill:pal.m}); }
+        else { slide.addShape(pptx.shapes.RECTANGLE,{x:0,y:6,w:'100%',h:1.5,fill:pal.m}); }
+        if(pptLogo) slide.addImage({ data:pptLogo, x:8.5, y:0.5, w:1, h:1 });
+        const xPos = 3.8; const c = '363636';
+        slide.addText(document.getElementById('pptTitle').value, { x:xPos, y:0.8, w:6, fontSize:32, bold:true, color:c });
+        slide.addText(`Alumno: ${document.getElementById('pptName').value}`, { x:xPos, y:2.0, fontSize:18, color:c });
+        slide.addText(`Matrícula: ${document.getElementById('pptMat').value}`, { x:xPos, y:2.4, fontSize:18, color:c });
+        slide.addText(`Grupo: ${document.getElementById('pptGroup').value}`, { x:xPos, y:2.8, fontSize:18, color:c });
+        slide.addText(`Tutor: ${document.getElementById('pptTutor').value}`, { x:xPos, y:3.2, fontSize:18, color:c });
+        slide.addText(`Materia: ${document.getElementById('pptSubject').value}`, { x:xPos, y:3.6, fontSize:18, color:c });
+        slide.addText(`Fecha: ${document.getElementById('pptDate').value}`, { x:xPos, y:4.0, fontSize:18, color:c });
+        let slide2 = pptx.addSlide({ masterName: "MASTER" });
+        slide2.addText("Contenido", { x:0.5, y:1.5, fontSize:24, bold:true, color:'333333' });
+        pptx.writeFile({ fileName: `Presentacion_UCNL.pptx` });
+    }
+
+    // ================= EXCEL DEFS & LOGIC (INTACTO) =================
+    // (Mantengo lógica exacta V11)
+    function renderExcelPreview() {
+        const index = document.getElementById('excelSelector').value;
+        const def = excelDefinitions[index];
+        let html = `<h4 style="color:${def.c}; margin-bottom:10px;">${def.t}</h4><table class="excel-table"><thead><tr style="background:${def.c};">`;
+        def.h.forEach(col => html += `<th>${col}</th>`);
+        html += `</tr></thead><tbody>`;
+        for(let i=0; i<6; i++) { html += `<tr>`; def.h.forEach(() => html += `<td>...</td>`); html += `</tr>`; }
+        html += `</tbody></table>`;
+        document.getElementById('excel-preview-box').innerHTML = html;
+        triggerAutoSave();
+    }
+    function downloadExcel() {
+        const index = document.getElementById('excelSelector').value; const def = excelDefinitions[index];
+        const wb = XLSX.utils.book_new(); const ws = XLSX.utils.aoa_to_sheet([ def.h, ["", ""] ]);
+        XLSX.utils.book_append_sheet(wb, ws, "Hoja1"); XLSX.writeFile(wb, `${def.t.replace(/\s/g,'_')}.xlsx`);
+    }
+    
+    // Auto-Run
+    function downloadPDF() {
+        const content = document.getElementById('cv-paper').innerHTML;
+        const win = window.open('','','height=900,width=1000');
+        win.document.write(`<html><head><title>Currículum</title><style>@page{margin:0;}body{margin:0;-webkit-print-color-adjust:exact;}</style></head><body>${content}</body></html>`);
+        win.document.close();
+        setTimeout(() => { win.focus(); win.print(); }, 500);
+    }
+</script>
+</body>
+</html>
