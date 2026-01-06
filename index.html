@@ -3,423 +3,548 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAPACITIUMX - Suite Productiva</title>
+    <title>Generador PRO V300 - Nivel Dios (Corregido)</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;900&family=Playfair+Display:wght@400;700&family=Roboto+Slab:wght@300;700&family=Lato:wght@300;400;900&family=Open+Sans:wght@400;600;800&family=Poppins:wght@300;600&family=Merriweather:wght@300;700&family=Oswald:wght@400;700&family=Raleway:wght@300;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&family=Playfair+Display:wght@700&family=Roboto+Slab:wght@300;700&family=Lato:wght@300;900&family=Open+Sans:wght@400;800&family=Bebas+Neue&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/dist/pptxgen.bundle.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root { --primary: #2563eb; --dark: #0f172a; --bg: #f1f5f9; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+        :root { --primary: #2563eb; --dark: #0f172a; --bg: #e2e8f0; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
 
-        /* --- PAYWALL (PANTALLA DE PAGO) --- */
+        /* =========================================
+           ESTILOS GENERALES
+           ========================================= */
         #paywall-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #111827 0%, #1e3a8a 100%);
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
             z-index: 9999; display: flex; justify-content: center; align-items: flex-start;
-            padding-top: 40px; overflow-y: auto;
+            padding-top: 20px; overflow-y: auto;
         }
         .paywall-box {
-            background: white; width: 95%; max-width: 600px; padding: 40px;
-            border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: white; width: 95%; max-width: 700px; padding: 25px;
+            border-radius: 15px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
             text-align: center; margin-bottom: 50px;
         }
-        .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.5rem; background: -webkit-linear-gradient(#2563eb, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
-        
-        .price-badge {
-            background: #dbeafe; color: #1e40af; padding: 10px 20px; 
-            border-radius: 50px; font-weight: 800; font-size: 1.1em;
-            display: inline-block; margin: 20px 0; border: 2px solid #bfdbfe;
-            animation: pulse 2s infinite;
+        .form-frame {
+            width: 100%; height: 600px; border: none; border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; background: #f8fafc;
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        .form-frame { width: 100%; height: 500px; border: none; background: #f8fafc; border-radius: 10px; margin-bottom: 20px; }
-        
-        .password-section { background: #f8fafc; padding: 20px; border-radius: 12px; border: 2px dashed #cbd5e1; }
-        .pass-input { padding: 12px; width: 60%; font-size: 18px; text-align: center; letter-spacing: 4px; border: 2px solid #e2e8f0; border-radius: 8px; text-transform: uppercase; font-weight: bold; }
-        .unlock-btn { padding: 12px 30px; background: #10b981; color: white; font-weight: bold; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 15px; }
-        .unlock-btn:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4); }
-
-        /* --- APP CONTAINER --- */
-        #app-container { display: none; padding: 20px; max-width: 1600px; margin: 0 auto; }
-        .header-app { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 30px; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
-        
-        .nav-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .nav-btn { padding: 12px 30px; border: none; background: white; border-radius: 12px; font-weight: 600; color: #64748b; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 8px; }
-        .nav-btn.active { background: #2563eb; color: white; transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4); }
-
-        .section { display: none; animation: slideUp 0.4s ease-out; }
-        .section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- EDITOR & PREVIEW --- */
-        .editor-container { display: grid; grid-template-columns: 320px 1fr; gap: 30px; height: calc(100vh - 200px); }
-        .sidebar-controls { background: white; padding: 20px; border-radius: 15px; overflow-y: auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .preview-canvas { background: #cbd5e1; border-radius: 15px; display: flex; justify-content: center; padding: 40px; overflow-y: auto; align-items: flex-start; }
-
-        /* INPUTS */
-        .control-group { margin-bottom: 20px; }
-        .control-group h4 { margin: 0 0 10px 0; font-size: 0.85rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; }
-        .styled-input { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 8px; font-family: inherit; font-size: 14px; box-sizing: border-box; transition: 0.2s; }
-        .styled-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-        .btn-add { width: 100%; padding: 8px; background: #eff6ff; color: #3b82f6; border: 1px dashed #3b82f6; border-radius: 6px; cursor: pointer; font-weight: 600; }
-        .btn-add:hover { background: #dbeafe; }
-
-        /* --- PAPEL DEL CV (WORD) --- */
-        #cv-paper { 
-            width: 210mm; min-height: 297mm; background: white; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
-            position: relative; overflow: hidden; 
-            /* Importante para impresión */
-            print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        .unlock-btn {
+            padding: 15px 30px; background: #16a34a; color: white; font-weight: bold; border: none;
+            border-radius: 8px; font-size: 18px; cursor: pointer; transition: 0.3s;
         }
+        .unlock-btn:hover { background: #15803d; transform: scale(1.05); }
 
-        /* --- PPT CANVAS --- */
-        #pptCanvas { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); max-width: 100%; }
+        #app-container { display: none; padding: 20px; }
+        .container { max-width: 1600px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); min-height: 90vh; }
+        
+        .nav-tabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .nav-btn { padding: 12px 25px; border: none; background: #e2e8f0; border-radius: 50px; font-weight: bold; color: #64748b; cursor: pointer; transition: 0.3s; }
+        .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
+        .section { display: none; } .section.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- EXCEL --- */
-        .excel-table { width: 100%; border-collapse: collapse; background: white; font-family: 'Calibri', sans-serif; }
-        .excel-table th, .excel-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
+        .editor-layout { display: grid; grid-template-columns: 350px 1fr; gap: 30px; height: calc(100vh - 180px); }
+        .editor-sidebar { overflow-y: auto; padding-right: 10px; }
+        .preview-area { background: #64748b; border-radius: 10px; display: flex; justify-content: center; padding: 40px; overflow-y: auto; align-items: flex-start;}
+        
+        .input-group { margin-bottom: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .input-group h4 { margin: 0 0 10px 0; color: #334155; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
+        .nice-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px; margin-bottom: 8px; box-sizing: border-box; font-size: 14px; transition: 0.2s; }
+        label { font-size: 0.85em; font-weight: 700; color: #64748b; text-transform: uppercase; }
 
-        @media print { body * { visibility: hidden; } #cv-paper, #cv-paper * { visibility: visible; } #cv-paper { position: absolute; left: 0; top: 0; width: 100%; margin: 0; box-shadow: none; } }
+        /* HERRAMIENTAS PPT MEJORADAS */
+        .ppt-toolbar { display: flex; gap: 5px; margin-bottom: 10px; background: #fff; padding: 5px; border-radius: 5px; border: 1px solid #ccc; flex-wrap: wrap;}
+        .tool-btn { flex: 1; border: none; background: #f1f5f9; cursor: pointer; border-radius: 3px; font-weight: bold; padding: 8px; min-width: 30px;}
+        .tool-btn.active { background: #2563eb; color: white; }
+        
+        /* BOTONES DE COLOR RÁPIDO */
+        .color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #ddd; cursor: pointer; margin-right: 5px; display: inline-block; }
+        .color-btn:hover { transform: scale(1.1); }
+        .color-btn.selected { border-color: #2563eb; box-shadow: 0 0 5px rgba(37,99,235,0.5); }
+
+        #cv-paper { width: 215.9mm; min-height: 279.4mm; background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
+
+        /* =========================================
+           LIMPIEZA DE IMPRESIÓN
+           ========================================= */
+        @media print { 
+            @page { margin: 0; size: auto; }
+            body, html { margin: 0; padding: 0; background: white; height: 100%; -webkit-print-color-adjust: exact; }
+            #paywall-overlay, .nav-tabs, .editor-sidebar, h2, button, .input-group, input, .ppt-toolbar, select, #excelSelector { display: none !important; }
+            #app-container { padding: 0; margin: 0; display: block !important; }
+            .container { box-shadow: none; margin: 0; padding: 0; width: 100%; max-width: none; min-height: auto; }
+            .preview-area { padding: 0; background: white; overflow: visible; display: block; }
+            .section { display: none; }
+            #cv { display: block !important; }
+            #cv-paper { visibility: visible !important; position: absolute; left: 0; top: 0; margin: 0; width: 100%; height: 100%; box-shadow: none; z-index: 9999; }
+            #cv-paper * { visibility: visible !important; }
+        }
     </style>
 </head>
 <body>
 
     <div id="paywall-overlay">
         <div class="paywall-box">
-            <div class="logo-text">CAPACITIUMX</div>
-            <p style="color:#64748b; font-weight: 500;">Herramientas Profesionales</p>
-            
-            <div class="price-badge">
-                🚀 OFERTA ESPECIAL: ACCESO DE POR VIDA $149 MXN
-            </div>
-
-            <p style="font-size: 0.9rem; color: #475569; margin-bottom: 20px;">
-                Genera currículums, presentaciones y hojas de cálculo ilimitadas.<br>
-                Completa el pago y recibe tu clave al instante.
-            </p>
-
+            <h2 style="color:#1e293b; margin-top:0;">💎 Registro Premium</h2>
+            <p style="color:#64748b; margin-bottom:20px;">Ingresa tu clave de acceso.</p>
             <iframe class="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSduCOTjhUkDN-9IHZ-cVLwJ3FL_gdWXpZTAHV7CrkSsSBwYNA/viewform?embedded=true"></iframe>
-
-            <div class="password-section">
-                <p style="font-weight:bold; color:#334155; margin-bottom:10px;">🔑 ¿Ya tienes tu clave?</p>
-                <input type="text" id="accessPass" class="pass-input" placeholder="XXXX-XXX">
-                <br>
-                <button class="unlock-btn" onclick="checkAccess()">INGRESAR AHORA</button>
-                <p id="errorMsg" style="color:#ef4444; display:none; font-weight:bold; margin-top:10px; font-size:0.9rem;">🚫 Clave incorrecta</p>
+            <div style="background:#f1f5f9; padding:20px; border-radius:10px; border:2px dashed #94a3b8;">
+                <p style="font-weight:bold; color:#1e293b; margin-bottom:10px;">🔑 Clave:</p>
+                <input type="text" id="accessPass" style="padding:15px; width:60%; font-size:20px; text-align:center; border:2px solid #cbd5e1; border-radius:8px; text-transform:uppercase;" placeholder="XXXX-XXX">
+                <br><br>
+                <button class="unlock-btn" onclick="checkAccess()">DESBLOQUEAR SISTEMA</button>
+                <p id="errorMsg" style="color:#ef4444; display:none; font-weight:bold; margin-top:10px;">🚫 Clave incorrecta</p>
             </div>
         </div>
     </div>
 
     <div id="app-container">
-        
-        <div class="header-app">
-            <div class="logo-text" style="font-size: 1.8rem;">CAPACITIUMX</div>
-            <button onclick="logout()" style="background:#fecaca; color:#b91c1c; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Cerrar Sesión</button>
-        </div>
-
-        <div class="nav-tabs">
-            <button class="nav-btn active" onclick="switchTab('cv')"><i class="fas fa-file-invoice"></i> Generador CV (Word)</button>
-            <button class="nav-btn" onclick="switchTab('ppt')"><i class="fas fa-desktop"></i> Generador PPT</button>
-            <button class="nav-btn" onclick="switchTab('excel')"><i class="fas fa-table"></i> Plantillas Excel</button>
-        </div>
-
-        <div id="cv" class="section active">
-            <div style="background: white; padding: 15px 30px; border-radius: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <div style="flex: 1;">
-                    <label style="font-weight:bold; color:#334155;">🎨 Selecciona Diseño (1 al 100):</label>
-                    <input type="range" id="cvStyle" min="1" max="100" value="1" oninput="renderCV()" style="width: 100%; accent-color: #2563eb; cursor: pointer;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#64748b;">
-                        <span>Clásico</span>
-                        <span>Moderno</span>
-                        <span>Creativo</span>
-                        <span>Ejecutivo</span>
-                    </div>
-                </div>
-                <button onclick="downloadPDF()" style="background:#2563eb; color:white; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:bold; box-shadow: 0 4px 10px rgba(37,99,235,0.3);"><i class="fas fa-download"></i> Descargar PDF</button>
+        <div class="container">
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0; color:#1e293b;">Generador <span style="color:var(--primary)">V300</span> Nivel Dios</h2>
+                <button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Salir</button>
             </div>
 
-            <div class="editor-container">
-                <div class="sidebar-controls">
-                    <div class="control-group">
-                        <h4>Tu Foto</h4>
-                        <input type="file" onchange="loadImg(this, 'cv')" class="styled-input">
-                    </div>
-                    <div class="control-group">
-                        <h4>Información Básica</h4>
-                        <input id="cvName" class="styled-input" placeholder="Nombre Completo" value="TU NOMBRE AQUÍ" onkeyup="renderCV()">
-                        <input id="cvTitle" class="styled-input" placeholder="Profesión" value="EJECUTIVO DE VENTAS" onkeyup="renderCV()">
-                        <input id="cvPhone" class="styled-input" placeholder="Teléfono" value="+52 55 1234 5678" onkeyup="renderCV()">
-                        <input id="cvEmail" class="styled-input" placeholder="Email" value="hola@capacitiumx.com" onkeyup="renderCV()">
-                        <textarea id="cvProfile" class="styled-input" rows="4" placeholder="Perfil Profesional" onkeyup="renderCV()">Profesional altamente motivado con historial comprobado en gestión estratégica y desarrollo de negocios. Experto en optimización de procesos y liderazgo de equipos de alto rendimiento.</textarea>
-                    </div>
-                    <div class="control-group">
-                        <h4>Experiencia <button class="btn-add" onclick="addJob()">+ Añadir</button></h4>
-                        <div id="job-list"></div>
-                    </div>
-                    <div class="control-group">
-                        <h4>Educación <button class="btn-add" onclick="addEdu()">+ Añadir</button></h4>
-                        <div id="edu-list"></div>
-                    </div>
-                    <div class="control-group">
-                        <h4>Habilidades <button class="btn-add" onclick="addSkill()">+ Añadir</button></h4>
-                        <div id="skill-list"></div>
-                    </div>
-                </div>
-                <div class="preview-canvas">
-                    <div id="cv-paper"></div>
-                </div>
+            <div class="nav-tabs">
+                <button class="nav-btn active" onclick="switchTab('cv')"><i class="fas fa-file-word"></i> 100 Diseños CV</button>
+                <button class="nav-btn" onclick="switchTab('ppt')"><i class="fas fa-file-powerpoint"></i> PPT Editor PRO</button>
+                <button class="nav-btn" onclick="switchTab('excel')"><i class="fas fa-file-excel"></i> Excel Dinámico</button>
             </div>
-        </div>
 
-        <div id="ppt" class="section">
-            <div style="background: white; padding: 15px 30px; border-radius: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px;">
-                <div style="flex: 1;">
-                    <label style="font-weight:bold; color:#ea580c;">📊 Estilo de Presentación:</label>
-                    <input type="range" id="pptStyle" min="1" max="100" value="1" oninput="renderPPT()" style="width: 100%; accent-color: #ea580c;">
+            <div id="cv" class="section active">
+                <div style="background:#1e293b; padding:15px; border-radius:10px; margin-bottom:20px; display:flex; gap:20px; align-items:center; color:white;">
+                    <div style="flex:1;">
+                        <strong>🎨 Estilo / Arquitectura (1-100):</strong>
+                        <input type="range" id="cvStyle" min="1" max="100" value="1" oninput="renderCV()" style="width:100%;">
+                    </div>
+                    <button onclick="downloadPDF()" style="background:#16a34a; border:none; padding:10px 20px; color:white; border-radius:5px; cursor:pointer; font-weight:bold;">IMPRIMIR / PDF</button>
                 </div>
-                <button onclick="downloadPPTX()" style="background:#ea580c; color:white; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:bold;"><i class="fas fa-file-powerpoint"></i> Descargar PPTX</button>
-            </div>
-            <div class="editor-container">
-                <div class="sidebar-controls">
-                    <div class="control-group">
-                        <h4>Datos de la Portada</h4>
-                        <input type="file" onchange="loadImg(this, 'ppt')" class="styled-input">
-                        <input id="pptTitleInput" class="styled-input" value="INFORME ANUAL 2025" onkeyup="renderPPT()">
-                        <input id="pptSubInput" class="styled-input" value="Estrategias de Crecimiento" onkeyup="renderPPT()">
-                        <input id="pptNameInput" class="styled-input" value="CapacitiumX Consultores" onkeyup="renderPPT()">
+
+                <div class="editor-layout">
+                    <div class="editor-sidebar">
+                        <div class="input-group">
+                            <h4>Datos Personales</h4>
+                            <label>Foto:</label> <input type="file" onchange="loadImg(this, 'cv')" class="nice-input">
+                            <label>Nombre:</label> <input id="cvName" class="nice-input" value="TU NOMBRE" onkeyup="renderCV()">
+                            <label>Título:</label> <input id="cvTitle" class="nice-input" value="PROFESIONAL" onkeyup="renderCV()">
+                            <label>Contacto:</label> <input id="cvContact" class="nice-input" value="Teléfono | Email" onkeyup="renderCV()">
+                        </div>
+                        <div class="input-group">
+                            <h4>Perfil</h4>
+                            <textarea id="cvProfile" class="nice-input" rows="4" onkeyup="renderCV()">Resumen profesional...</textarea>
+                        </div>
+                        
+                        <div class="input-group">
+                            <h4>Experiencia (Texto Libre)</h4>
+                            <textarea id="cvExperience" class="nice-input" rows="8" onkeyup="renderCV()" placeholder="Escribe aquí toda tu experiencia libremente..."></textarea>
+                        </div>
+
+                        <div class="input-group">
+                            <h4>Educación <button onclick="addEdu()" style="float:right; background:#2563eb; color:white; border:none; border-radius:3px; cursor:pointer;">+</button></h4>
+                            <div id="edu-list"></div>
+                        </div>
+
+                        <div class="input-group">
+                            <h4>Habilidades <button onclick="addSkill()" style="float:right;">+</button></h4>
+                            <div id="skill-list"></div>
+                        </div>
+                    </div>
+                    <div class="preview-area">
+                        <div id="cv-paper"></div>
                     </div>
                 </div>
-                <div class="preview-canvas">
-                    <canvas id="pptCanvas" width="960" height="540"></canvas>
+            </div>
+
+            <div id="ppt" class="section">
+                <div style="background:#ea580c; padding:15px; border-radius:10px; margin-bottom:20px; display:flex; gap:20px; align-items:center; color:white;">
+                    <div style="flex:1;">
+                        <strong>📊 Diseño (1-100):</strong>
+                        <input type="range" id="pptStyle" min="1" max="100" value="1" oninput="renderPPT()" style="width:100%;">
+                    </div>
+                    <button onclick="downloadPPTX()" style="background:white; color:#ea580c; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold;">DESCARGAR .PPTX</button>
+                </div>
+
+                <div class="editor-layout">
+                    <div class="editor-sidebar">
+                        <div class="input-group">
+                            <h4>🎨 Color del Texto</h4>
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                <div onclick="setPPTColor('#ffffff')" class="color-btn" style="background:#ffffff;" title="Blanco"></div>
+                                <div onclick="setPPTColor('#000000')" class="color-btn" style="background:#000000;" title="Negro"></div>
+                                <div onclick="setPPTColor('#333333')" class="color-btn" style="background:#333333;" title="Gris Oscuro"></div>
+                                <div style="flex:1; text-align:right; font-size:12px;">Personalizado:</div>
+                                <input type="color" id="pptTextColor" onchange="setPPTColor(this.value)" value="#333333" style="height:30px; width:40px; border:none; cursor:pointer;">
+                            </div>
+                            
+                            <h4>Estilo y Alineación</h4>
+                            <div class="ppt-toolbar">
+                                <button class="tool-btn" onclick="togglePPTStyle('bold')" id="btnBold"><i class="fas fa-bold"></i></button>
+                                <button class="tool-btn" onclick="togglePPTStyle('italic')" id="btnItalic"><i class="fas fa-italic"></i></button>
+                                <div style="width:1px; background:#ddd; margin:0 5px;"></div>
+                                <button class="tool-btn" onclick="setPPTAlign('left')" id="btnLeft"><i class="fas fa-align-left"></i></button>
+                                <button class="tool-btn" onclick="setPPTAlign('center')" id="btnCenter"><i class="fas fa-align-center"></i></button>
+                                <button class="tool-btn" onclick="setPPTAlign('right')" id="btnRight"><i class="fas fa-align-right"></i></button>
+                            </div>
+                            
+                            <h4>Contenido</h4>
+                            <label>Logo / Imagen:</label> <input type="file" onchange="loadImg(this, 'ppt')" class="nice-input">
+                            <label>Título:</label> <input id="pptTitleInput" class="nice-input" value="ESTRATEGIA 2025" onkeyup="renderPPT()">
+                            <label>Subtítulo:</label> <input id="pptSubInput" class="nice-input" value="Plan de Crecimiento" onkeyup="renderPPT()">
+                            <label>Presentador:</label> <input id="pptNameInput" class="nice-input" value="Lic. Juan Pérez" onkeyup="renderPPT()">
+                            <label>Cargo:</label> <input id="pptRoleInput" class="nice-input" value="Dirección General" onkeyup="renderPPT()">
+                        </div>
+                    </div>
+                    <div class="preview-area">
+                        <canvas id="pptCanvas" width="960" height="540"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="excel" class="section">
-            <div style="background: white; padding: 15px 30px; border-radius: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px;">
-                <div style="flex: 1;">
-                    <label style="font-weight:bold; color:#15803d;">📈 Catálogo de Plantillas:</label>
-                    <select id="excelSelector" onchange="renderExcel()" class="styled-input" style="font-size:1rem;"></select>
+            <div id="excel" class="section">
+                <div style="background:#15803d; padding:15px; border-radius:10px; margin-bottom:20px; display:flex; gap:20px; align-items:center; color:white;">
+                    <div style="flex:1;">
+                        <strong>📈 Selecciona Plantilla (Cambia la tabla):</strong>
+                        <select id="excelSelector" onchange="renderExcel()" style="padding:10px; border-radius:5px; width:70%; font-weight:bold;"></select>
+                    </div>
+                    <div>
+                        Color: <input type="range" id="excelColor" min="1" max="100" oninput="renderExcel()">
+                    </div>
+                    <button onclick="downloadExcel()" style="background:white; color:#15803d; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold;">DESCARGAR EXCEL</button>
                 </div>
-                <button onclick="downloadExcel()" style="background:#15803d; color:white; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:bold;"><i class="fas fa-file-excel"></i> Descargar Excel</button>
+                <div id="excel-preview-box" style="overflow-x:auto; background:white; padding:30px; box-shadow: inset 0 0 20px #f1f5f9; min-height:500px; border-radius:10px;"></div>
             </div>
-            <div id="excel-preview-box" style="background: white; padding: 40px; border-radius: 15px; min-height: 400px; overflow-x: auto;"></div>
-        </div>
 
+        </div>
     </div>
 
     <script>
-        // --- AUTENTICACIÓN ---
-        const VALID_KEYS = ["CAPA-2025", "ADMIN-X", "PRO-100", "DEMO-123"]; // Agrega aquí tus claves reales
+        // ==========================================
+        // CONFIGURACIÓN Y SEGURIDAD
+        // ==========================================
+        const VALID_KEYS = ["X7K-92M", "B4L-33Q", "N9P-22X", "A55-R9T", "GOD-MODE"];
         
+        let pptConfig = { bold: false, italic: false, align: 'center', color: '#333333' };
+        let excelConfig = { currentTemplate: null };
+
         function checkAccess() {
-            const input = document.getElementById('accessPass').value.toUpperCase();
-            if(input.length > 2) { 
-                localStorage.setItem('capacitium_auth', 'true');
-                unlockApp();
+            const input = document.getElementById('accessPass').value.trim().toUpperCase();
+            if(VALID_KEYS.includes(input)) {
+                document.getElementById('paywall-overlay').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+                localStorage.setItem('god_mode_auth', 'true');
+                initSystem();
             } else {
                 document.getElementById('errorMsg').style.display = 'block';
             }
         }
-        function unlockApp() {
+
+        function logout() { localStorage.removeItem('god_mode_auth'); location.reload(); }
+        if(localStorage.getItem('god_mode_auth') === 'true') {
             document.getElementById('paywall-overlay').style.display = 'none';
             document.getElementById('app-container').style.display = 'block';
-            initSystem();
+            window.onload = initSystem;
         }
-        function logout() { localStorage.removeItem('capacitium_auth'); location.reload(); }
-        
-        if(localStorage.getItem('capacitium_auth') === 'true') unlockApp();
 
-        // --- DATOS GLOBALES ---
+        // DATOS DEL CV ACTUALIZADOS
         let cvData = { 
             photo: null, 
-            jobs: [{t:'Gerente General', c:'Empresa Global S.A.', d:'Liderazgo de equipo de 50 personas y aumento de ventas en un 20%.'}], 
-            edus: [{t:'Licenciatura en Administración', s:'Universidad Nacional', d:'2015 - 2019'}], 
-            skills: ['Liderazgo', 'Ventas', 'Office 365', 'Inglés Avanzado', 'Gestión de Tiempo'] 
+            experienceText: "Gerente de Operaciones | 2020 - Presente\nLideré un equipo de 20 personas logrando un 15% de aumento en eficiencia.\n\nAnalista Senior | 2018 - 2020\nResponsable del análisis de datos y reportes ejecutivos.", // TEXTO LIBRE INICIAL
+            edus: [], 
+            skills: ['Liderazgo', 'Excel'] 
         };
-        let pptData = { logo: null };
-
-        // --- MOTOR DE GENERACIÓN DE ESTILOS "CAPACITIUMX" ---
         
-        // Paletas de Colores Vivas y Profesionales (20 Variaciones)
-        const palettes = [
-            { id:1, p:'#1e3a8a', s:'#3b82f6', t:'#f8fafc', font:'Montserrat' }, // Azul Corporativo
-            { id:2, p:'#0f766e', s:'#2dd4bf', t:'#f0fdfa', font:'Raleway' }, // Turquesa Moderno
-            { id:3, p:'#be123c', s:'#fb7185', t:'#fff1f2', font:'Playfair Display' }, // Rosa Elegante
-            { id:4, p:'#7e22ce', s:'#c084fc', t:'#faf5ff', font:'Lato' }, // Morado Creativo
-            { id:5, p:'#1c1917', s:'#ea580c', t:'#fff7ed', font:'Oswald' }, // Negro y Naranja Impacto
-            { id:6, p:'#15803d', s:'#86efac', t:'#f0fdf4', font:'Roboto Slab' }, // Verde Naturaleza
-            { id:7, p:'#0f172a', s:'#94a3b8', t:'#ffffff', font:'Open Sans' }, // Gris Minimalista
-            { id:8, p:'#b45309', s:'#fbbf24', t:'#fffbeb', font:'Merriweather' }, // Dorado Clásico
-            { id:9, p:'#831843', s:'#db2777', t:'#fdf2f8', font:'Poppins' }, // Magenta
-            { id:10, p:'#0e7490', s:'#67e8f9', t:'#ecfeff', font:'Montserrat' }, // Cyan Tech
-            // Se repiten variaciones para lógica de módulo...
-            { id:11, p:'#3730a3', s:'#818cf8', t:'#eef2ff', font:'Lato' },
-            { id:12, p:'#9d174d', s:'#f472b6', t:'#fdf2f8', font:'Raleway' },
-            { id:13, p:'#065f46', s:'#34d399', t:'#ecfdf5', font:'Open Sans' },
-            { id:14, p:'#86198f', s:'#e879f9', t:'#fdf4ff', font:'Poppins' },
-            { id:15, p:'#1e293b', s:'#38bdf8', t:'#f0f9ff', font:'Roboto Slab' },
-            { id:16, p:'#9f1239', s:'#fb7185', t:'#fff1f2', font:'Playfair Display' },
-            { id:17, p:'#3f6212', s:'#84cc16', t:'#f7fee7', font:'Lato' },
-            { id:18, p:'#854d0e', s:'#facc15', t:'#fefce8', font:'Merriweather' },
-            { id:19, p:'#111827', s:'#f43f5e', t:'#fff1f2', font:'Oswald' },
-            { id:20, p:'#4c1d95', s:'#a78bfa', t:'#f5f3ff', font:'Montserrat' }
+        let pptData = { logo: null };
+        
+        const themes = [
+            { main: '#2c3e50', sec: '#e74c3c', bg: '#fdfbf7', font: 'Montserrat', fontHead: 'Bebas Neue' },
+            { main: '#1e3a8a', sec: '#3b82f6', bg: '#ffffff', font: 'Poppins', fontHead: 'Poppins' },
+            { main: '#064e3b', sec: '#10b981', bg: '#f0fdf4', font: 'Playfair Display', fontHead: 'Playfair Display' },
+            { main: '#4c1d95', sec: '#8b5cf6', bg: '#f5f3ff', font: 'Lato', fontHead: 'Lato' },
+            { main: '#000000', sec: '#666666', bg: '#ffffff', font: 'Open Sans', fontHead: 'Montserrat' }
         ];
 
         function initSystem() {
-            // Inicializar datos dummy
-            initExcelList();
-            renderCV();
-            renderPPT();
+            initExcelList(); 
+            document.getElementById('cvExperience').value = cvData.experienceText; // Cargar texto inicial
+            addEdu(); // Agregar un campo de educación por defecto
+            renderCV(); 
+            renderPPT(); 
             renderExcel();
+            updatePPTButtons();
         }
 
-        // --- RENDERIZADOR DEL CV (WORD MEJORADO) ---
+        // --- CV ENGINE (CORREGIDO) ---
         function renderCV() {
-            const paper = document.getElementById('cv-paper');
-            const index = parseInt(document.getElementById('cvStyle').value);
+            const styleIdx = parseInt(document.getElementById('cvStyle').value);
+            const theme = themes[(styleIdx - 1) % themes.length];
             
-            // LOGICA MATEMÁTICA PARA 100 ESTILOS ÚNICOS
-            // Combinamos 5 layouts x 20 paletas = 100 estilos
-            const layoutType = Math.ceil(index / 20); // 1, 2, 3, 4, 5
-            const themeIndex = (index - 1) % 20; // 0 a 19
-            const th = palettes[themeIndex];
+            let layoutType = (styleIdx % 3) + 1;
 
-            // Datos
+            const paper = document.getElementById('cv-paper');
             const name = document.getElementById('cvName').value;
             const title = document.getElementById('cvTitle').value;
-            const contact = document.getElementById('cvPhone').value + " | " + document.getElementById('cvEmail').value;
+            const contact = document.getElementById('cvContact').value;
             const profile = document.getElementById('cvProfile').value;
             
-            const imgHTML = cvData.photo 
-                ? `<img src="${cvData.photo}" style="width:140px; height:140px; object-fit:cover; border-radius:50%; border:5px solid white; box-shadow:0 10px 20px rgba(0,0,0,0.15);">` 
-                : `<div style="width:120px; height:120px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:40px;">${name.charAt(0)}</div>`;
+            // Capturar texto libre de experiencia
+            cvData.experienceText = document.getElementById('cvExperience').value;
+            // Convertir saltos de línea en <br> para HTML
+            const expHTML = cvData.experienceText.replace(/\n/g, '<br>');
 
-            let html = `<div style="font-family:'${th.font}', sans-serif; color:#334155; height:100%; box-sizing:border-box;">`;
+            let photoHTML = cvData.photo ? `<img src="${cvData.photo}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="background:#eee; width:100%; height:100%;"></div>`;
 
-            /* --- LAYOUT 1: BARRA LATERAL IZQUIERDA (CORPORATIVO) --- */
-            if (layoutType === 1) {
+            let html = `<div style="font-family: '${theme.font}', sans-serif; color: #333; height: 100%;">`;
+
+            // Construir HTML de Educación
+            const eduHTML = cvData.edus.map(e => `
+                <div style="margin-bottom:10px;">
+                    <strong>${e.t}</strong> <span style="opacity:0.7">| ${e.y}</span><br>
+                    <small>${e.s}</small>
+                </div>
+            `).join('');
+
+            if(layoutType === 1) { // Sidebar
                 html += `
-                <div style="display:grid; grid-template-columns: 35% 65%; height:100%;">
-                    <div style="background:${th.p}; color:white; padding:40px 30px; text-align:center; display:flex; flex-direction:column; gap:30px;">
-                        <center>${imgHTML}</center>
-                        <div>
-                            <h2 style="font-size:1.2rem; margin-bottom:5px; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px;">CONTACTO</h2>
-                            <p style="font-size:0.9rem; opacity:0.9;">${document.getElementById('cvPhone').value}<br>${document.getElementById('cvEmail').value}</p>
-                        </div>
-                        <div style="text-align:left;">
-                            <h2 style="font-size:1.2rem; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px;">HABILIDADES</h2>
-                            <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                                ${cvData.skills.map(s => `<span style="background:rgba(255,255,255,0.15); padding:4px 8px; border-radius:4px; font-size:0.85rem;">${s}</span>`).join('')}
-                            </div>
-                        </div>
-                        <div style="text-align:left; margin-top:auto;">
-                            <h2 style="font-size:1.2rem; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px;">EDUCACIÓN</h2>
-                            ${cvData.edus.map(e => `<div style="margin-bottom:10px;"><strong style="color:${th.s}">${e.t}</strong><br><span style="font-size:0.9rem;">${e.s}</span><br><small style="opacity:0.7;">${e.d}</small></div>`).join('')}
-                        </div>
-                    </div>
-                    <div style="padding:50px; background:${th.t};">
-                        <div style="margin-bottom:40px;">
-                            <h1 style="font-size:3rem; line-height:1; color:${th.p}; margin:0; text-transform:uppercase;">${name}</h1>
-                            <p style="font-size:1.5rem; color:${th.s}; letter-spacing:2px; margin-top:5px; font-weight:300;">${title}</p>
-                        </div>
-                        <div style="margin-bottom:40px;">
-                            <h3 style="color:${th.p}; border-left:5px solid ${th.s}; padding-left:15px; text-transform:uppercase;">Perfil Profesional</h3>
-                            <p style="line-height:1.6; text-align:justify;">${profile}</p>
-                        </div>
-                        <div>
-                            <h3 style="color:${th.p}; border-left:5px solid ${th.s}; padding-left:15px; text-transform:uppercase;">Experiencia Laboral</h3>
-                            ${cvData.jobs.map(j => `
-                                <div style="margin-bottom:25px; position:relative; padding-left:20px; border-left:1px solid #cbd5e1;">
-                                    <div style="position:absolute; left:-6px; top:5px; width:11px; height:11px; background:${th.s}; border-radius:50%;"></div>
-                                    <h4 style="margin:0; font-size:1.1rem;">${j.t}</h4>
-                                    <div style="color:${th.p}; font-weight:600; font-size:0.95rem;">${j.c}</div>
-                                    <p style="margin-top:5px; font-size:0.95rem; color:#475569;">${j.d}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>`;
-            }
-
-            /* --- LAYOUT 2: ENCABEZADO SUPERIOR (MODERNO) --- */
-            else if (layoutType === 2) {
-                html += `
-                <div style="padding:0; height:100%; display:flex; flex-direction:column;">
-                    <div style="background:${th.p}; color:white; padding:50px; display:flex; align-items:center; gap:30px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);">
-                        ${imgHTML}
-                        <div>
-                            <h1 style="font-size:3.5rem; margin:0; font-weight:800;">${name}</h1>
-                            <p style="font-size:1.5rem; color:${th.s}; background:rgba(255,255,255,0.1); display:inline-block; padding:5px 15px; border-radius:5px;">${title}</p>
-                        </div>
-                    </div>
-                    <div style="padding:40px 50px; display:grid; grid-template-columns: 2fr 1fr; gap:50px; flex:1;">
-                        <div>
-                            <h3 style="color:${th.p}; border-bottom:2px solid ${th.s}; padding-bottom:10px; margin-bottom:20px;">EXPERIENCIA</h3>
-                            ${cvData.jobs.map(j => `<div style="background:white; padding:15px; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.05); margin-bottom:15px; border-left:4px solid ${th.p};"><strong>${j.t}</strong> <span style="float:right; color:#64748b; font-size:0.9em;">${j.c}</span><p style="margin:10px 0 0 0; color:#475569;">${j.d}</p></div>`).join('')}
-                            
-                            <h3 style="color:${th.p}; border-bottom:2px solid ${th.s}; padding-bottom:10px; margin-bottom:20px; margin-top:40px;">PERFIL</h3>
-                            <p style="background:${th.t}; padding:20px; border-radius:10px; border:1px solid ${th.s};">${profile}</p>
-                        </div>
-                        <div style="background:${th.t}; padding:30px; border-radius:20px;">
-                            <h4 style="color:${th.p}; font-weight:800;">CONTACTO</h4>
-                            <p style="font-size:0.9rem;">${contact}</p>
-                            
-                            <h4 style="color:${th.p}; font-weight:800; margin-top:30px;">SKILLS</h4>
-                            ${cvData.skills.map(s => `<div style="margin-bottom:8px;"><div style="font-size:0.8rem; margin-bottom:2px;">${s}</div><div style="height:6px; background:#cbd5e1; border-radius:3px;"><div style="height:100%; width:85%; background:${th.s}; border-radius:3px;"></div></div></div>`).join('')}
-                            
-                            <h4 style="color:${th.p}; font-weight:800; margin-top:30px;">EDUCACIÓN</h4>
-                             ${cvData.edus.map(e => `<div style="margin-bottom:10px; border-bottom:1px dashed #cbd5e1; padding-bottom:10px;"><strong>${e.t}</strong><br>${e.s}</div>`).join('')}
-                        </div>
-                    </div>
-                </div>`;
-            }
-
-            /* --- LAYOUT 3, 4, 5... (Simplificados para no alargar demasiado el código, pero siguen la lógica de colores) --- */
-            else {
-                // Layout Creativo / Minimalista
-                const isDark = layoutType === 4;
-                html += `
-                <div style="padding:60px; height:100%; background:${isDark ? '#1e293b' : 'white'}; color:${isDark ? 'white' : '#333'}; border:20px solid ${th.p};">
-                    <div style="text-align:center; border-bottom:2px solid ${th.s}; padding-bottom:40px; margin-bottom:40px;">
-                        ${imgHTML}
-                        <h1 style="font-size:40px; margin:20px 0 10px 0; color:${isDark ? 'white' : th.p}; letter-spacing:5px; text-transform:uppercase;">${name}</h1>
-                        <p style="color:${th.s}; font-weight:bold; font-size:18px;">${title}</p>
-                        <p style="font-size:14px; opacity:0.7;">${contact}</p>
-                    </div>
-                    <div style="column-count:2; column-gap:60px;">
-                        <h3 style="background:${th.s}; color:white; padding:5px 15px; display:inline-block; transform:skew(-10deg);">PERFIL</h3>
-                        <p style="margin-bottom:30px;">${profile}</p>
+                <div style="display:grid; grid-template-columns: 32% 68%; height:100%;">
+                    <div style="background:${theme.main}; color:white; padding:40px 20px;">
+                        <div style="width:140px; height:140px; border-radius:50%; overflow:hidden; margin:0 auto 30px auto; border:4px solid white;">${photoHTML}</div>
+                        <h2 style="text-align:center;">${name}</h2>
+                        <p style="text-align:center; opacity:0.8;">${title}</p>
+                        <hr style="border-color:rgba(255,255,255,0.2);">
+                        <p>${contact}</p>
+                        <h4>HABILIDADES</h4>
+                        ${cvData.skills.map(s=>`<div>• ${s}</div>`).join('')}
                         
-                        <h3 style="background:${th.s}; color:white; padding:5px 15px; display:inline-block; transform:skew(-10deg);">EXPERIENCIA</h3>
-                        ${cvData.jobs.map(j => `<div style="margin-bottom:20px;"><strong>${j.t}</strong><br><span style="color:${th.s}">${j.c}</span><p style="font-size:0.9em;">${j.d}</p></div>`).join('')}
-                        
-                        <h3 style="background:${th.s}; color:white; padding:5px 15px; display:inline-block; transform:skew(-10deg); break-before:column;">EDUCACIÓN</h3>
-                        ${cvData.edus.map(e => `<div style="margin-bottom:20px;"><strong>${e.t}</strong><br>${e.s}<br><small>${e.d}</small></div>`).join('')}
-
-                        <h3 style="background:${th.s}; color:white; padding:5px 15px; display:inline-block; transform:skew(-10deg);">SKILLS</h3>
-                        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                            ${cvData.skills.map(s => `<span style="border:1px solid ${th.s}; padding:5px 10px; border-radius:20px; font-size:0.8rem;">${s}</span>`).join('')}
+                        <h4 style="margin-top:30px;">EDUCACIÓN</h4>
+                        ${eduHTML}
+                    </div>
+                    <div style="padding:40px;">
+                        <h3 style="color:${theme.main}; border-bottom:2px solid ${theme.sec};">PERFIL</h3>
+                        <p>${profile}</p>
+                        <h3 style="color:${theme.main}; border-bottom:2px solid ${theme.sec}; margin-top:30px;">EXPERIENCIA</h3>
+                        <div style="line-height:1.6;">${expHTML}</div>
+                    </div>
+                </div>`;
+            } else if(layoutType === 2) { // Header Top
+                html += `
+                <div style="padding:50px;">
+                    <div style="border-bottom:5px solid ${theme.main}; padding-bottom:20px; display:flex; gap:30px;">
+                        <div style="width:100px; height:100px; border-radius:10px; overflow:hidden;">${photoHTML}</div>
+                        <div>
+                            <h1 style="color:${theme.main}; margin:0;">${name}</h1>
+                            <h3 style="color:${theme.sec}; margin:0;">${title}</h3>
+                            <small>${contact}</small>
                         </div>
+                    </div>
+                    <div style="margin-top:30px; columns:2;">
+                        <h4>PERFIL</h4> <p>${profile}</p>
+                        <h4>EDUCACIÓN</h4> ${eduHTML}
+                        <h4>EXPERIENCIA</h4>
+                        <div style="background:#f9f9f9; padding:15px; border-radius:5px;">${expHTML}</div>
+                    </div>
+                </div>`;
+            } else { // Minimal
+                html += `
+                <div style="padding:60px; text-align:center;">
+                    <h1 style="font-size:40px; letter-spacing:5px;">${name}</h1>
+                    <p style="text-transform:uppercase; color:${theme.sec};">${title}</p>
+                    <div style="margin:30px auto; width:50px; height:2px; background:black;"></div>
+                    <div style="text-align:left; padding:0 50px;">
+                        <h4>PERFIL</h4> <p>${profile}</p>
+                        <h4>EXPERIENCIA</h4>
+                        <div style="border-left:3px solid ${theme.main}; padding-left:15px; margin-bottom:20px;">
+                            ${expHTML}
+                        </div>
+                        <h4>EDUCACIÓN</h4>
+                        ${eduHTML}
                     </div>
                 </div>`;
             }
-
             html += `</div>`;
             paper.innerHTML = html;
         }
 
-        // --- FUNCIONES AUXILIARES CV ---
-        function addJob() { cvData.jobs.push({t:'Nuevo Puesto',c:'Empresa',d:'Descripción de logros...'}); renderCV(); }
-        function addEdu() { cvData.edus.push({t:'Título',s:'Institución',d:'Año'}); renderCV(); }
-        function addSkill() { cvData.skills.push('Habilidad'); renderCV(); }
+        // --- PPT ENGINE ---
+        function togglePPTStyle(type) {
+            if(type === 'bold') pptConfig.bold = !pptConfig.bold;
+            if(type === 'italic') pptConfig.italic = !pptConfig.italic;
+            updatePPTButtons();
+            renderPPT();
+        }
+
+        function setPPTAlign(align) {
+            pptConfig.align = align;
+            updatePPTButtons();
+            renderPPT();
+        }
+
+        function setPPTColor(color) {
+            pptConfig.color = color;
+            document.getElementById('pptTextColor').value = color;
+            renderPPT();
+        }
+
+        function updatePPTButtons() {
+            document.getElementById('btnBold').className = pptConfig.bold ? 'tool-btn active' : 'tool-btn';
+            document.getElementById('btnItalic').className = pptConfig.italic ? 'tool-btn active' : 'tool-btn';
+            ['left', 'center', 'right'].forEach(a => {
+                document.getElementById('btn'+a.charAt(0).toUpperCase()+a.slice(1)).className = (pptConfig.align === a) ? 'tool-btn active' : 'tool-btn';
+            });
+        }
+
+        function renderPPT() {
+            const canvas = document.getElementById('pptCanvas');
+            const ctx = canvas.getContext('2d');
+            const styleIdx = parseInt(document.getElementById('pptStyle').value);
+            const theme = themes[(styleIdx - 1) % themes.length];
+            
+            ctx.clearRect(0,0,960,540);
+            
+            const grd = ctx.createLinearGradient(0,0,960,540);
+            grd.addColorStop(0, "white");
+            grd.addColorStop(1, theme.bg);
+            ctx.fillStyle = grd;
+            ctx.fillRect(0,0,960,540);
+
+            ctx.fillStyle = theme.main;
+            if (styleIdx % 2 === 0) { 
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(960,0); ctx.lineTo(960,100); ctx.lineTo(0,400); ctx.fill();
+            } else {
+                ctx.fillRect(0,0,300,540);
+            }
+
+            if(pptData.logo) {
+                const img = new Image(); img.src = pptData.logo;
+                try { ctx.drawImage(img, 850, 30, 80, 80); } catch(e){}
+            }
+
+            const title = document.getElementById('pptTitleInput').value;
+            const sub = document.getElementById('pptSubInput').value;
+            const presenter = document.getElementById('pptNameInput').value;
+            
+            let fontStr = "";
+            if(pptConfig.italic) fontStr += "italic ";
+            if(pptConfig.bold) fontStr += "bold ";
+            
+            let alignX = 480; 
+            if(pptConfig.align === 'left') alignX = 50;
+            if(pptConfig.align === 'right') alignX = 910;
+            
+            ctx.textAlign = pptConfig.align;
+            
+            ctx.fillStyle = pptConfig.color;
+            ctx.font = `${fontStr} 55px ${theme.fontHead}`;
+            ctx.fillText(title, alignX, 250);
+
+            ctx.fillStyle = theme.sec; 
+            ctx.font = `32px ${theme.font}`;
+            ctx.fillText(sub, alignX, 300);
+
+            ctx.fillStyle = "#555";
+            ctx.font = "20px Arial";
+            ctx.fillText(presenter, alignX, 480);
+        }
+
+        // --- EXCEL DINÁMICO ---
+        const excelTemplates = {
+            'Presupuesto': { cols: ['Categoría', 'Presupuestado', 'Real', 'Diferencia', 'Estado'], data: [['Vivienda', '$1,500', '$1,500', '$0', 'OK'], ['Comida', '$800', '$950', '-$150', 'Alerta'], ['Transporte', '$300', '$250', '+$50', 'OK'], ['Ahorro', '$200', '$100', '-$100', 'Bajo']] },
+            'Nómina': { cols: ['ID Emp', 'Nombre', 'Cargo', 'Salario Bruto', 'Impuestos', 'Neto'], data: [['001', 'Juan Pérez', 'Gerente', '$5,000', '$1,000', '$4,000'], ['002', 'Ana Gómez', 'Analista', '$3,000', '$600', '$2,400'], ['003', 'Luis Solís', 'Auxiliar', '$1,800', '$200', '$1,600']] },
+            'Inventario': { cols: ['SKU', 'Producto', 'Stock Mín', 'Stock Actual', 'Costo Unit', 'Valor Total'], data: [['A-100', 'Laptop Pro', '10', '45', '$800', '$36,000'], ['B-200', 'Mouse BT', '50', '12', '$20', '$240'], ['C-300', 'Monitor 4K', '15', '18', '$300', '$5,400']] },
+            'Ventas': { cols: ['Fecha', 'Cliente', 'Producto', 'Cantidad', 'Precio', 'Total'], data: [['01/12/25', 'Empresa X', 'Servicio Web', '1', '$1500', '$1500'], ['02/12/25', 'Cliente Y', 'Licencia', '5', '$100', '$500'], ['05/12/25', 'Empresa Z', 'Consultoría', '10', '$80', '$800']] },
+            'Escuela': { cols: ['Matrícula', 'Alumno', 'Matemáticas', 'Historia', 'Ciencias', 'Promedio'], data: [['A001', 'Roberto D.', '9.5', '8.0', '9.0', '8.8'], ['A002', 'Maria F.', '10.0', '10.0', '9.5', '9.8'], ['A003', 'Carlos G.', '6.0', '7.5', '7.0', '6.8']] }
+        };
+
+        function initExcelList() {
+            const s = document.getElementById('excelSelector');
+            const cats = ['Presupuesto','Nómina','Inventario','Ventas','Escuela'];
+            s.innerHTML = "";
+            for(let i=0; i<100; i++) {
+                let catName = cats[i % cats.length];
+                let opt = document.createElement('option');
+                opt.value = catName; 
+                opt.text = `${i+1}. Plantilla ${catName} - Estilo PRO ${Math.ceil((i+1)/5)}`;
+                s.add(opt);
+            }
+        }
+
+        function renderExcel() {
+            const h = document.getElementById('excel-preview-box');
+            const selector = document.getElementById('excelSelector');
+            const selectedCat = selector.value || 'Presupuesto';
+            const template = excelTemplates[selectedCat] || excelTemplates['Presupuesto'];
+            excelConfig.currentTemplate = template;
+            const val = document.getElementById('excelColor').value;
+            let color = '#2563eb';
+            if(val > 33) color = '#15803d';
+            if(val > 66) color = '#b91c1c';
+            let html = `<h2 style="color:${color}; font-family:'Arial'; border-bottom:2px solid ${color}; padding-bottom:10px;">Plantilla: ${selectedCat}</h2>`;
+            html += `<table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:14px;">`;
+            html += `<thead><tr style="background:${color}; color:white;">`;
+            template.cols.forEach(col => { html += `<th style="padding:12px; text-align:left;">${col}</th>`; });
+            html += `</tr></thead><tbody>`;
+            template.data.forEach((row, i) => {
+                let bg = (i % 2 === 0) ? '#fff' : '#f8f9fa';
+                html += `<tr style="background:${bg}; border-bottom:1px solid #ddd;">`;
+                row.forEach(cell => {
+                    let cellColor = (cell.includes('-') || cell === 'Alerta' || cell === 'Bajo') ? 'red' : '#333';
+                    if(cell === 'OK') cellColor = 'green';
+                    html += `<td style="padding:12px; color:${cellColor};">${cell}</td>`;
+                });
+                html += `</tr>`;
+            });
+            html += `</tbody></table>`;
+            h.innerHTML = html;
+        }
+
+        function downloadExcel() {
+            const template = excelConfig.currentTemplate;
+            if(!template) return;
+            const wb = XLSX.utils.book_new();
+            const wsData = [template.cols, ...template.data];
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            const selector = document.getElementById('excelSelector');
+            const name = selector.value || "Plantilla";
+            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
+            XLSX.writeFile(wb, `${name}_Nivel_Dios.xlsx`);
+        }
+
+        // --- UTILIDADES DE EDICIÓN ---
+        
+        // FUNCIÓN AGREGAR EDUCACIÓN (ESTABA VACÍA, AHORA FUNCIONA)
+        function addEdu(){ 
+            const index = cvData.edus.length;
+            cvData.edus.push({t:'Carrera/Curso', s:'Escuela/Plataforma', y:'2025'});
+            const div = document.createElement('div');
+            div.style.marginBottom = "15px"; div.style.borderBottom = "1px solid #ddd"; div.style.paddingBottom = "5px";
+            div.innerHTML = `
+                <input class="nice-input" placeholder="Título/Carrera" value="Carrera/Curso" oninput="updateEduData(${index},'t',this.value)">
+                <input class="nice-input" placeholder="Institución" value="Escuela/Plataforma" oninput="updateEduData(${index},'s',this.value)">
+                <input class="nice-input" placeholder="Año" value="2025" oninput="updateEduData(${index},'y',this.value)">
+            `;
+            document.getElementById('edu-list').appendChild(div);
+            renderCV();
+        }
+
+        function updateEduData(idx, field, val) {
+            cvData.edus[idx][field] = val;
+            renderCV();
+        }
+
+        // FUNCIÓN AGREGAR SKILL (SIMPLE PARA EL EJEMPLO)
+        function addSkill(){ 
+            const skill = prompt("Ingresa la habilidad:");
+            if(skill) {
+                cvData.skills.push(skill);
+                renderCV();
+            }
+        }
         
         function loadImg(input, type) {
             if(input.files[0]) {
@@ -433,86 +558,13 @@
             }
         }
         function downloadPDF() { window.print(); }
-
-        // --- RENDERIZADOR PPT (SIMPLE) ---
-        function renderPPT() {
-            const canvas = document.getElementById('pptCanvas');
-            const ctx = canvas.getContext('2d');
-            const index = parseInt(document.getElementById('pptStyle').value);
-            const theme = palettes[(index - 1) % 20];
-
-            // Fondo
-            ctx.fillStyle = theme.t; ctx.fillRect(0,0,960,540);
-            
-            // Gráficos Procedurales
-            ctx.fillStyle = theme.p;
-            if (index % 3 === 0) {
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(400,0); ctx.lineTo(200,540); ctx.lineTo(0,540); ctx.fill();
-            } else if (index % 3 === 1) {
-                ctx.fillRect(0,440,960,100); ctx.fillStyle = theme.s; ctx.fillRect(50,400,200,200);
-            } else {
-                ctx.beginPath(); ctx.arc(960, 0, 400, 0, Math.PI*2); ctx.fill();
-            }
-
-            // Textos
-            ctx.fillStyle = (index % 3 === 0) ? 'white' : theme.p;
-            ctx.font = `bold 50px ${theme.font}`;
-            ctx.fillText(document.getElementById('pptTitleInput').value, 50, 200);
-            
-            ctx.fillStyle = theme.s;
-            ctx.font = `30px ${theme.font}`;
-            ctx.fillText(document.getElementById('pptSubInput').value, 50, 260);
-
-            if(pptData.logo) {
-                const img = new Image(); img.src = pptData.logo;
-                ctx.drawImage(img, 850, 20, 80, 80);
-            }
-        }
-        
-        function downloadPPTX() {
+        function downloadPPTX() { 
             let pptx = new PptxGenJS();
             let slide = pptx.addSlide();
-            slide.addText("Generado por CAPACITIUMX", { x:1, y:1, fontSize:24, color:'363636' });
-            pptx.writeFile({ fileName: "Presentacion_CapacitiumX.pptx" });
+            slide.addText(document.getElementById('pptTitleInput').value, { x:1, y:2, fontSize:30, color:pptConfig.color.replace('#','') });
+            pptx.writeFile({ fileName: "Presentacion_V300.pptx" });
         }
-
-        // --- EXCEL LOGIC ---
-        function initExcelList() {
-            const sel = document.getElementById('excelSelector');
-            const cats = ['Finanzas', 'RRHH', 'Ventas', 'Marketing', 'Inventario'];
-            for(let i=1; i<=100; i++) {
-                let opt = document.createElement('option');
-                opt.text = `Plantilla ${i}: ${cats[i%5]} - Estilo Profesional`;
-                sel.add(opt);
-            }
-        }
-        function renderExcel() {
-            const box = document.getElementById('excel-preview-box');
-            box.innerHTML = `<h3 style="color:#15803d">Vista Previa: Hoja de Cálculo Profesional</h3>
-            <table class="excel-table">
-                <tr style="background:#f0fdf4; font-weight:bold;"><td>ID</td><td>Descripción</td><td>Monto</td><td>Estado</td></tr>
-                <tr><td>001</td><td>Venta Mensual</td><td>$5,000</td><td>Completado</td></tr>
-                <tr><td>002</td><td>Gasto Operativo</td><td>$1,200</td><td>Pendiente</td></tr>
-                <tr><td>003</td><td>Impuestos</td><td>$800</td><td>Calculado</td></tr>
-            </table>`;
-        }
-        function downloadExcel() {
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.aoa_to_sheet([["ID","Concepto","Valor"],["1","Ingresos","1000"],["2","Egresos","500"]]);
-            XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
-            XLSX.writeFile(wb, "CapacitiumX_Excel.xlsx");
-        }
-
-        function switchTab(id) {
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            // Hack visual para botones
-            if(id==='cv') document.querySelectorAll('.nav-btn')[0].classList.add('active');
-            if(id==='ppt') document.querySelectorAll('.nav-btn')[1].classList.add('active');
-            if(id==='excel') document.querySelectorAll('.nav-btn')[2].classList.add('active');
-        }
-
+        function switchTab(id) { document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
     </script>
 </body>
 </html>
