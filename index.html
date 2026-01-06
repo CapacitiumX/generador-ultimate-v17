@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador PRO V300 - Acceso Directo</title>
+    <title>Generador PRO V300 - Completo</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&family=Playfair+Display:wght@700&family=Roboto+Slab:wght@300;700&family=Lato:wght@300;900&family=Open+Sans:wght@400;800&family=Bebas+Neue&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     
@@ -19,7 +19,7 @@
         /* =========================================
            ESTILOS GENERALES
            ========================================= */
-        #app-container { display: block; padding: 20px; } /* VISIBLE POR DEFECTO */
+        #app-container { display: block; padding: 20px; }
         .container { max-width: 1600px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); min-height: 90vh; }
         
         .nav-tabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
@@ -72,7 +72,7 @@
         <div class="container">
             
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 style="margin:0; color:#1e293b;">Generador <span style="color:var(--primary)">V300</span> Directo</h2>
+                <h2 style="margin:0; color:#1e293b;">Generador <span style="color:var(--primary)">V300</span> Completo</h2>
             </div>
 
             <div class="nav-tabs">
@@ -115,6 +115,16 @@
                         </div>
 
                         <div class="input-group">
+                            <h4>Seminarios <button onclick="addSeminar()" style="float:right; background:#2563eb; color:white; border:none; border-radius:3px; cursor:pointer;">+</button></h4>
+                            <div id="seminar-list"></div>
+                        </div>
+
+                        <div class="input-group">
+                            <h4>Certificaciones <button onclick="addCert()" style="float:right; background:#2563eb; color:white; border:none; border-radius:3px; cursor:pointer;">+</button></h4>
+                            <div id="cert-list"></div>
+                        </div>
+
+                        <div class="input-group">
                             <h4>Habilidades <button onclick="addSkill()" style="float:right;">+</button></h4>
                             <div id="skill-list"></div>
                         </div>
@@ -133,21 +143,16 @@
                     </div>
                     <button onclick="downloadPPTX()" style="background:white; color:#ea580c; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold;">DESCARGAR .PPTX</button>
                 </div>
-
                 <div class="editor-layout">
                     <div class="editor-sidebar">
                         <div class="input-group">
-                            <h4>🎨 Color del Texto</h4>
-                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                                <div onclick="setPPTColor('#ffffff')" class="color-btn" style="background:#ffffff;" title="Blanco"></div>
-                                <div onclick="setPPTColor('#000000')" class="color-btn" style="background:#000000;" title="Negro"></div>
-                                <div onclick="setPPTColor('#333333')" class="color-btn" style="background:#333333;" title="Gris Oscuro"></div>
-                                <div style="flex:1; text-align:right; font-size:12px;">Personalizado:</div>
-                                <input type="color" id="pptTextColor" onchange="setPPTColor(this.value)" value="#333333" style="height:30px; width:40px; border:none; cursor:pointer;">
-                            </div>
-                            
-                            <h4>Estilo y Alineación</h4>
-                            <div class="ppt-toolbar">
+                            <h4>Contenido PPT</h4>
+                            <label>Logo:</label> <input type="file" onchange="loadImg(this, 'ppt')" class="nice-input">
+                            <label>Título:</label> <input id="pptTitleInput" class="nice-input" value="ESTRATEGIA 2025" onkeyup="renderPPT()">
+                            <label>Subtítulo:</label> <input id="pptSubInput" class="nice-input" value="Plan de Crecimiento" onkeyup="renderPPT()">
+                            <label>Presentador:</label> <input id="pptNameInput" class="nice-input" value="Lic. Juan Pérez" onkeyup="renderPPT()">
+                            <label>Color Texto:</label> <input type="color" id="pptTextColor" onchange="setPPTColor(this.value)" value="#333333" class="nice-input" style="height:40px;">
+                            <div class="ppt-toolbar" style="margin-top:10px;">
                                 <button class="tool-btn" onclick="togglePPTStyle('bold')" id="btnBold"><i class="fas fa-bold"></i></button>
                                 <button class="tool-btn" onclick="togglePPTStyle('italic')" id="btnItalic"><i class="fas fa-italic"></i></button>
                                 <div style="width:1px; background:#ddd; margin:0 5px;"></div>
@@ -155,13 +160,6 @@
                                 <button class="tool-btn" onclick="setPPTAlign('center')" id="btnCenter"><i class="fas fa-align-center"></i></button>
                                 <button class="tool-btn" onclick="setPPTAlign('right')" id="btnRight"><i class="fas fa-align-right"></i></button>
                             </div>
-                            
-                            <h4>Contenido</h4>
-                            <label>Logo / Imagen:</label> <input type="file" onchange="loadImg(this, 'ppt')" class="nice-input">
-                            <label>Título:</label> <input id="pptTitleInput" class="nice-input" value="ESTRATEGIA 2025" onkeyup="renderPPT()">
-                            <label>Subtítulo:</label> <input id="pptSubInput" class="nice-input" value="Plan de Crecimiento" onkeyup="renderPPT()">
-                            <label>Presentador:</label> <input id="pptNameInput" class="nice-input" value="Lic. Juan Pérez" onkeyup="renderPPT()">
-                            <label>Cargo:</label> <input id="pptRoleInput" class="nice-input" value="Dirección General" onkeyup="renderPPT()">
                         </div>
                     </div>
                     <div class="preview-area">
@@ -173,7 +171,7 @@
             <div id="excel" class="section">
                 <div style="background:#15803d; padding:15px; border-radius:10px; margin-bottom:20px; display:flex; gap:20px; align-items:center; color:white;">
                     <div style="flex:1;">
-                        <strong>📈 Selecciona Plantilla (Cambia la tabla):</strong>
+                        <strong>📈 Selecciona Plantilla:</strong>
                         <select id="excelSelector" onchange="renderExcel()" style="padding:10px; border-radius:5px; width:70%; font-weight:bold;"></select>
                     </div>
                     <div>
@@ -188,21 +186,18 @@
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURACIÓN DIRECTA (SIN LOGIN)
-        // ==========================================
-        
         let pptConfig = { bold: false, italic: false, align: 'center', color: '#333333' };
         let excelConfig = { currentTemplate: null };
 
-        // INICIAR AUTOMÁTICAMENTE AL CARGAR
         window.onload = initSystem;
 
-        // DATOS DEL CV 
+        // ESTRUCTURA DE DATOS ACTUALIZADA CON SEMINARIOS Y CERTIFICACIONES
         let cvData = { 
             photo: null, 
             experienceText: "Gerente de Operaciones | 2020 - Presente\nLideré un equipo de 20 personas logrando un 15% de aumento en eficiencia.\n\nAnalista Senior | 2018 - 2020\nResponsable del análisis de datos y reportes ejecutivos.", 
             edus: [], 
+            seminars: [], // Nuevo
+            certs: [],    // Nuevo
             skills: ['Liderazgo', 'Excel'] 
         };
         
@@ -220,6 +215,7 @@
             initExcelList(); 
             document.getElementById('cvExperience').value = cvData.experienceText; 
             addEdu(); 
+            // Inicializar con un elemento vacío en las nuevas secciones si se desea, o dejar vacío.
             renderCV(); 
             renderPPT(); 
             renderExcel();
@@ -230,9 +226,7 @@
         function renderCV() {
             const styleIdx = parseInt(document.getElementById('cvStyle').value);
             const theme = themes[(styleIdx - 1) % themes.length];
-            
             let layoutType = (styleIdx % 3) + 1;
-
             const paper = document.getElementById('cv-paper');
             const name = document.getElementById('cvName').value;
             const title = document.getElementById('cvTitle').value;
@@ -244,16 +238,21 @@
 
             let photoHTML = cvData.photo ? `<img src="${cvData.photo}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="background:#eee; width:100%; height:100%;"></div>`;
 
+            // GENERADORES DE HTML PARA LISTAS
+            const eduHTML = cvData.edus.map(e => `<div style="margin-bottom:8px;"><strong>${e.t}</strong> <span style="opacity:0.7">| ${e.y}</span><br><small>${e.s}</small></div>`).join('');
+            
+            // HTML PARA SEMINARIOS Y CERTIFICACIONES
+            const seminarHTML = cvData.seminars.length > 0 ? 
+                `<h4>SEMINARIOS</h4>` + cvData.seminars.map(e => `<div style="margin-bottom:8px;"><strong>${e.t}</strong> <span style="opacity:0.7">| ${e.y}</span><br><small>${e.s}</small></div>`).join('') 
+                : '';
+
+            const certHTML = cvData.certs.length > 0 ? 
+                `<h4>CERTIFICACIONES</h4>` + cvData.certs.map(e => `<div style="margin-bottom:8px;"><strong>${e.t}</strong> <span style="opacity:0.7">| ${e.y}</span><br><small>${e.s}</small></div>`).join('') 
+                : '';
+
             let html = `<div style="font-family: '${theme.font}', sans-serif; color: #333; height: 100%;">`;
 
-            const eduHTML = cvData.edus.map(e => `
-                <div style="margin-bottom:10px;">
-                    <strong>${e.t}</strong> <span style="opacity:0.7">| ${e.y}</span><br>
-                    <small>${e.s}</small>
-                </div>
-            `).join('');
-
-            if(layoutType === 1) { // Sidebar
+            if(layoutType === 1) { // Sidebar Layout
                 html += `
                 <div style="display:grid; grid-template-columns: 32% 68%; height:100%;">
                     <div style="background:${theme.main}; color:white; padding:40px 20px;">
@@ -272,7 +271,10 @@
                         <h3 style="color:${theme.main}; border-bottom:2px solid ${theme.sec};">PERFIL</h3>
                         <p>${profile}</p>
                         <h3 style="color:${theme.main}; border-bottom:2px solid ${theme.sec}; margin-top:30px;">EXPERIENCIA</h3>
-                        <div style="line-height:1.6;">${expHTML}</div>
+                        <div style="line-height:1.6; margin-bottom:20px;">${expHTML}</div>
+                        
+                        <div style="margin-top:20px;">${seminarHTML}</div>
+                        <div style="margin-top:20px;">${certHTML}</div>
                     </div>
                 </div>`;
             } else if(layoutType === 2) { // Header Top
@@ -286,11 +288,15 @@
                             <small>${contact}</small>
                         </div>
                     </div>
-                    <div style="margin-top:30px; columns:2;">
-                        <h4>PERFIL</h4> <p>${profile}</p>
-                        <h4>EDUCACIÓN</h4> ${eduHTML}
-                        <h4>EXPERIENCIA</h4>
-                        <div style="background:#f9f9f9; padding:15px; border-radius:5px;">${expHTML}</div>
+                    <div style="margin-top:30px; columns:2; column-gap:40px;">
+                        <div style="break-inside: avoid;"><h4>PERFIL</h4> <p>${profile}</p></div>
+                        <div style="break-inside: avoid;"><h4>EDUCACIÓN</h4> ${eduHTML}</div>
+                        <div style="break-inside: avoid;">
+                            <h4>EXPERIENCIA</h4>
+                            <div style="background:#f9f9f9; padding:15px; border-radius:5px;">${expHTML}</div>
+                        </div>
+                        <div style="break-inside: avoid; margin-top:20px;">${seminarHTML}</div>
+                        <div style="break-inside: avoid; margin-top:20px;">${certHTML}</div>
                     </div>
                 </div>`;
             } else { // Minimal
@@ -302,11 +308,10 @@
                     <div style="text-align:left; padding:0 50px;">
                         <h4>PERFIL</h4> <p>${profile}</p>
                         <h4>EXPERIENCIA</h4>
-                        <div style="border-left:3px solid ${theme.main}; padding-left:15px; margin-bottom:20px;">
-                            ${expHTML}
-                        </div>
-                        <h4>EDUCACIÓN</h4>
-                        ${eduHTML}
+                        <div style="border-left:3px solid ${theme.main}; padding-left:15px; margin-bottom:20px;">${expHTML}</div>
+                        <h4>EDUCACIÓN</h4> ${eduHTML}
+                        <div style="margin-top:20px;">${seminarHTML}</div>
+                        <div style="margin-top:20px;">${certHTML}</div>
                     </div>
                 </div>`;
             }
@@ -314,26 +319,78 @@
             paper.innerHTML = html;
         }
 
-        // --- PPT ENGINE ---
+        // --- FUNCIONES DE EDICIÓN ---
+
+        // EDUCACIÓN
+        function addEdu(){ 
+            const index = cvData.edus.length;
+            cvData.edus.push({t:'Carrera/Curso', s:'Escuela/Plataforma', y:'2025'});
+            createInputBlock('edu-list', index, 'edu', 'Carrera', 'Institución', 'Año');
+            renderCV();
+        }
+        function updateEduData(idx, field, val) { cvData.edus[idx][field] = val; renderCV(); }
+
+        // SEMINARIOS (NUEVO)
+        function addSeminar(){ 
+            const index = cvData.seminars.length;
+            cvData.seminars.push({t:'Nombre Seminario', s:'Organizador', y:'2025'});
+            createInputBlock('seminar-list', index, 'seminar', 'Seminario', 'Organizador', 'Año');
+            renderCV();
+        }
+        function updateSeminarData(idx, field, val) { cvData.seminars[idx][field] = val; renderCV(); }
+
+        // CERTIFICACIONES (NUEVO)
+        function addCert(){ 
+            const index = cvData.certs.length;
+            cvData.certs.push({t:'Nombre Certificación', s:'Emisor', y:'2025'});
+            createInputBlock('cert-list', index, 'cert', 'Certificación', 'Emisor', 'Año');
+            renderCV();
+        }
+        function updateCertData(idx, field, val) { cvData.certs[idx][field] = val; renderCV(); }
+
+        // HELPER PARA CREAR INPUTS
+        function createInputBlock(containerId, index, type, ph1, ph2, ph3) {
+            const div = document.createElement('div');
+            div.style.marginBottom = "15px"; div.style.borderBottom = "1px solid #ddd"; div.style.paddingBottom = "5px";
+            
+            // Función dinámica de actualización
+            const fnName = type === 'edu' ? 'updateEduData' : (type === 'seminar' ? 'updateSeminarData' : 'updateCertData');
+            
+            div.innerHTML = `
+                <input class="nice-input" placeholder="${ph1}" oninput="${fnName}(${index},'t',this.value)">
+                <input class="nice-input" placeholder="${ph2}" oninput="${fnName}(${index},'s',this.value)">
+                <input class="nice-input" placeholder="${ph3}" oninput="${fnName}(${index},'y',this.value)">
+            `;
+            document.getElementById(containerId).appendChild(div);
+        }
+
+        // SKILLS
+        function addSkill(){ 
+            const skill = prompt("Ingresa la habilidad:");
+            if(skill) { cvData.skills.push(skill); renderCV(); }
+        }
+        
+        // IMAGENES
+        function loadImg(input, type) {
+            if(input.files[0]) {
+                const r = new FileReader();
+                r.onload = e => {
+                    if(type==='cv') cvData.photo = e.target.result;
+                    if(type==='ppt') pptData.logo = e.target.result;
+                    renderCV(); renderPPT();
+                }
+                r.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // PPT FUNCIONES
         function togglePPTStyle(type) {
             if(type === 'bold') pptConfig.bold = !pptConfig.bold;
             if(type === 'italic') pptConfig.italic = !pptConfig.italic;
-            updatePPTButtons();
-            renderPPT();
+            updatePPTButtons(); renderPPT();
         }
-
-        function setPPTAlign(align) {
-            pptConfig.align = align;
-            updatePPTButtons();
-            renderPPT();
-        }
-
-        function setPPTColor(color) {
-            pptConfig.color = color;
-            document.getElementById('pptTextColor').value = color;
-            renderPPT();
-        }
-
+        function setPPTAlign(align) { pptConfig.align = align; updatePPTButtons(); renderPPT(); }
+        function setPPTColor(color) { pptConfig.color = color; document.getElementById('pptTextColor').value = color; renderPPT(); }
         function updatePPTButtons() {
             document.getElementById('btnBold').className = pptConfig.bold ? 'tool-btn active' : 'tool-btn';
             document.getElementById('btnItalic').className = pptConfig.italic ? 'tool-btn active' : 'tool-btn';
@@ -341,61 +398,34 @@
                 document.getElementById('btn'+a.charAt(0).toUpperCase()+a.slice(1)).className = (pptConfig.align === a) ? 'tool-btn active' : 'tool-btn';
             });
         }
-
         function renderPPT() {
             const canvas = document.getElementById('pptCanvas');
             const ctx = canvas.getContext('2d');
             const styleIdx = parseInt(document.getElementById('pptStyle').value);
             const theme = themes[(styleIdx - 1) % themes.length];
-            
             ctx.clearRect(0,0,960,540);
-            
             const grd = ctx.createLinearGradient(0,0,960,540);
-            grd.addColorStop(0, "white");
-            grd.addColorStop(1, theme.bg);
-            ctx.fillStyle = grd;
-            ctx.fillRect(0,0,960,540);
-
+            grd.addColorStop(0, "white"); grd.addColorStop(1, theme.bg);
+            ctx.fillStyle = grd; ctx.fillRect(0,0,960,540);
             ctx.fillStyle = theme.main;
-            if (styleIdx % 2 === 0) { 
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(960,0); ctx.lineTo(960,100); ctx.lineTo(0,400); ctx.fill();
-            } else {
-                ctx.fillRect(0,0,300,540);
-            }
-
+            if (styleIdx % 2 === 0) { ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(960,0); ctx.lineTo(960,100); ctx.lineTo(0,400); ctx.fill(); } 
+            else { ctx.fillRect(0,0,300,540); }
             if(pptData.logo) {
                 const img = new Image(); img.src = pptData.logo;
                 try { ctx.drawImage(img, 850, 30, 80, 80); } catch(e){}
             }
-
             const title = document.getElementById('pptTitleInput').value;
             const sub = document.getElementById('pptSubInput').value;
             const presenter = document.getElementById('pptNameInput').value;
-            
-            let fontStr = "";
-            if(pptConfig.italic) fontStr += "italic ";
-            if(pptConfig.bold) fontStr += "bold ";
-            
-            let alignX = 480; 
-            if(pptConfig.align === 'left') alignX = 50;
-            if(pptConfig.align === 'right') alignX = 910;
-            
+            let fontStr = ""; if(pptConfig.italic) fontStr += "italic "; if(pptConfig.bold) fontStr += "bold ";
+            let alignX = 480; if(pptConfig.align === 'left') alignX = 50; if(pptConfig.align === 'right') alignX = 910;
             ctx.textAlign = pptConfig.align;
-            
-            ctx.fillStyle = pptConfig.color;
-            ctx.font = `${fontStr} 55px ${theme.fontHead}`;
-            ctx.fillText(title, alignX, 250);
-
-            ctx.fillStyle = theme.sec; 
-            ctx.font = `32px ${theme.font}`;
-            ctx.fillText(sub, alignX, 300);
-
-            ctx.fillStyle = "#555";
-            ctx.font = "20px Arial";
-            ctx.fillText(presenter, alignX, 480);
+            ctx.fillStyle = pptConfig.color; ctx.font = `${fontStr} 55px ${theme.fontHead}`; ctx.fillText(title, alignX, 250);
+            ctx.fillStyle = theme.sec; ctx.font = `32px ${theme.font}`; ctx.fillText(sub, alignX, 300);
+            ctx.fillStyle = "#555"; ctx.font = "20px Arial"; ctx.fillText(presenter, alignX, 480);
         }
 
-        // --- EXCEL DINÁMICO ---
+        // EXCEL FUNCIONES
         const excelTemplates = {
             'Presupuesto': { cols: ['Categoría', 'Presupuestado', 'Real', 'Diferencia', 'Estado'], data: [['Vivienda', '$1,500', '$1,500', '$0', 'OK'], ['Comida', '$800', '$950', '-$150', 'Alerta'], ['Transporte', '$300', '$250', '+$50', 'OK'], ['Ahorro', '$200', '$100', '-$100', 'Bajo']] },
             'Nómina': { cols: ['ID Emp', 'Nombre', 'Cargo', 'Salario Bruto', 'Impuestos', 'Neto'], data: [['001', 'Juan Pérez', 'Gerente', '$5,000', '$1,000', '$4,000'], ['002', 'Ana Gómez', 'Analista', '$3,000', '$600', '$2,400'], ['003', 'Luis Solís', 'Auxiliar', '$1,800', '$200', '$1,600']] },
@@ -403,7 +433,6 @@
             'Ventas': { cols: ['Fecha', 'Cliente', 'Producto', 'Cantidad', 'Precio', 'Total'], data: [['01/12/25', 'Empresa X', 'Servicio Web', '1', '$1500', '$1500'], ['02/12/25', 'Cliente Y', 'Licencia', '5', '$100', '$500'], ['05/12/25', 'Empresa Z', 'Consultoría', '10', '$80', '$800']] },
             'Escuela': { cols: ['Matrícula', 'Alumno', 'Matemáticas', 'Historia', 'Ciencias', 'Promedio'], data: [['A001', 'Roberto D.', '9.5', '8.0', '9.0', '8.8'], ['A002', 'Maria F.', '10.0', '10.0', '9.5', '9.8'], ['A003', 'Carlos G.', '6.0', '7.5', '7.0', '6.8']] }
         };
-
         function initExcelList() {
             const s = document.getElementById('excelSelector');
             const cats = ['Presupuesto','Nómina','Inventario','Ventas','Escuela'];
@@ -411,12 +440,9 @@
             for(let i=0; i<100; i++) {
                 let catName = cats[i % cats.length];
                 let opt = document.createElement('option');
-                opt.value = catName; 
-                opt.text = `${i+1}. Plantilla ${catName} - Estilo PRO ${Math.ceil((i+1)/5)}`;
-                s.add(opt);
+                opt.value = catName; opt.text = `${i+1}. Plantilla ${catName} - Estilo PRO ${Math.ceil((i+1)/5)}`; s.add(opt);
             }
         }
-
         function renderExcel() {
             const h = document.getElementById('excel-preview-box');
             const selector = document.getElementById('excelSelector');
@@ -424,12 +450,9 @@
             const template = excelTemplates[selectedCat] || excelTemplates['Presupuesto'];
             excelConfig.currentTemplate = template;
             const val = document.getElementById('excelColor').value;
-            let color = '#2563eb';
-            if(val > 33) color = '#15803d';
-            if(val > 66) color = '#b91c1c';
+            let color = '#2563eb'; if(val > 33) color = '#15803d'; if(val > 66) color = '#b91c1c';
             let html = `<h2 style="color:${color}; font-family:'Arial'; border-bottom:2px solid ${color}; padding-bottom:10px;">Plantilla: ${selectedCat}</h2>`;
-            html += `<table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:14px;">`;
-            html += `<thead><tr style="background:${color}; color:white;">`;
+            html += `<table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:14px;"><thead><tr style="background:${color}; color:white;">`;
             template.cols.forEach(col => { html += `<th style="padding:12px; text-align:left;">${col}</th>`; });
             html += `</tr></thead><tbody>`;
             template.data.forEach((row, i) => {
@@ -445,63 +468,16 @@
             html += `</tbody></table>`;
             h.innerHTML = html;
         }
-
         function downloadExcel() {
-            const template = excelConfig.currentTemplate;
-            if(!template) return;
+            const template = excelConfig.currentTemplate; if(!template) return;
             const wb = XLSX.utils.book_new();
-            const wsData = [template.cols, ...template.data];
-            const ws = XLSX.utils.aoa_to_sheet(wsData);
-            const selector = document.getElementById('excelSelector');
-            const name = selector.value || "Plantilla";
+            const ws = XLSX.utils.aoa_to_sheet([template.cols, ...template.data]);
             XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
-            XLSX.writeFile(wb, `${name}_Nivel_Dios.xlsx`);
-        }
-
-        // --- UTILIDADES ---
-        
-        function addEdu(){ 
-            const index = cvData.edus.length;
-            cvData.edus.push({t:'Carrera/Curso', s:'Escuela/Plataforma', y:'2025'});
-            const div = document.createElement('div');
-            div.style.marginBottom = "15px"; div.style.borderBottom = "1px solid #ddd"; div.style.paddingBottom = "5px";
-            div.innerHTML = `
-                <input class="nice-input" placeholder="Título/Carrera" value="Carrera/Curso" oninput="updateEduData(${index},'t',this.value)">
-                <input class="nice-input" placeholder="Institución" value="Escuela/Plataforma" oninput="updateEduData(${index},'s',this.value)">
-                <input class="nice-input" placeholder="Año" value="2025" oninput="updateEduData(${index},'y',this.value)">
-            `;
-            document.getElementById('edu-list').appendChild(div);
-            renderCV();
-        }
-
-        function updateEduData(idx, field, val) {
-            cvData.edus[idx][field] = val;
-            renderCV();
-        }
-
-        function addSkill(){ 
-            const skill = prompt("Ingresa la habilidad:");
-            if(skill) {
-                cvData.skills.push(skill);
-                renderCV();
-            }
-        }
-        
-        function loadImg(input, type) {
-            if(input.files[0]) {
-                const r = new FileReader();
-                r.onload = e => {
-                    if(type==='cv') cvData.photo = e.target.result;
-                    if(type==='ppt') pptData.logo = e.target.result;
-                    renderCV(); renderPPT();
-                }
-                r.readAsDataURL(input.files[0]);
-            }
+            XLSX.writeFile(wb, `${document.getElementById('excelSelector').value || "Plantilla"}_Nivel_Dios.xlsx`);
         }
         function downloadPDF() { window.print(); }
         function downloadPPTX() { 
-            let pptx = new PptxGenJS();
-            let slide = pptx.addSlide();
+            let pptx = new PptxGenJS(); let slide = pptx.addSlide();
             slide.addText(document.getElementById('pptTitleInput').value, { x:1, y:2, fontSize:30, color:pptConfig.color.replace('#','') });
             pptx.writeFile({ fileName: "Presentacion_V300.pptx" });
         }
